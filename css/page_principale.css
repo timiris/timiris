@@ -1,0 +1,143 @@
+body{
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    margin:0;
+    padding:0;
+}
+
+#conteneur{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+}
+
+#header{
+    margin:0 auto;
+    padding:0;
+    height:100px;
+    top:0;
+    background-color: #FFF ;
+    border-bottom:4px solid #009FE0;
+    left:0;
+    border-bottom-right-radius : 25px;
+    border-bottom-left-radius : 25px;
+}
+
+#LogoTIMIRIS{
+    height:80px;
+    margin-left: 30px;
+}
+
+#LogoMATTEL{
+    height:70px;
+    width: 100px;
+    padding: 5px;
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-right: 30px;
+}
+
+#leftMenu{
+    position : absolute;
+    left : 0px;
+    top: 130px;
+    width : 300px;
+    padding-top: 70px;
+    padding-left:10px;
+}
+
+#divPrincipale{
+    position : absolute;
+    display:block;
+    left : 300px;
+    right:50px;
+    top: 170px;
+}
+
+#footer{
+    position: absolute;
+    margin:0;
+    padding:0;
+    bottom:0;
+    width:99%;
+    left:0;
+}
+
+#TitreTIMIRIS{
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size:45px;
+    color:#009FE0;
+    text-shadow: 3px 3px #aaa;
+    text-transform: uppercase;
+    margin-top: 15px;
+}
+
+#idDeconnexion{
+    position:absolute;
+    top:105px;
+    right:10px;
+    cursor:pointer;
+    z-index:3;
+    font-size:80%;
+    font-weight: bold;
+}
+
+#idModPWD{
+    position:absolute;
+    top:105px;
+    left:10px;
+    cursor:pointer;
+    z-index:3;
+    font-size:80%;
+}
+
+.champVide{
+    background-color:orange;
+}
+
+#CalculerCible{
+    position:absolute;
+    right:50px;
+    bottom:0px;
+}
+
+.divShadow{
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -moz-box-shadow: 5px 5px #009FE0;
+    -webkit-box-shadow: 5px 5px #009FE0;
+    box-shadow: 5px 5px #009FE0;
+}
+
+#icon_exp_excel{
+    position:absolute;
+    cursor:pointer;
+    height:32px;
+    width:32px;
+}
+
+.ch_date, .clsFile{
+    cursor:pointer;
+    font-weight: bold;
+    color :#009FE0;
+}
+
+.ch_date.details:before {
+    content:'+';
+}
+
+.ch_date.moins:before {
+    content:'-';
+}
+
+.liste_cdrs{
+    font-size:12px;
+ }
+ 
+ #dataTableMois{
+     margin-left: -20px;
+ }
+ 

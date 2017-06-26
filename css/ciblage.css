@@ -1,0 +1,94 @@
+.SupprimerDIV, .SupBonus {
+    float: right;
+    background: url(../img/supprimer.png) no-repeat center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: top;
+    cursor:pointer;
+    margin-right:5px;
+    margin-top:3px;
+}
+
+.ajouterDIV {
+    float: right;
+    background: url(../img/plus.png) no-repeat center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: top;
+    cursor:pointer;
+    margin-right:5px;
+    margin-top:-10px;
+}
+
+.reduireDIV {
+    float: right;
+    display: inline-block;
+    vertical-align: top;
+    cursor:pointer;
+    margin-right:5px;
+    margin-top:3px;
+}
+
+select.critere, select.sel_stat{
+    min-width: 150px;
+}
+
+.divCritere{
+    background-color: #ddd;
+    -moz-box-shadow: 2px 2px #009FE0;
+    -webkit-box-shadow: 2px 2px #009FE0;
+    box-shadow: 2px 2px #009FE0;
+    margin-bottom: 10px;
+}
+.entCritere{
+    margin-left:150px; 
+    font-size:120%; 
+    border-bottom:1px solid black; 
+    border-radius:30px; 
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.divGroupeCritere{
+    border : 1px solid #25A6E1;
+    -moz-box-shadow: 3px 3px #009FE0;
+    -webkit-box-shadow: 3px 3px #009FE0;
+    box-shadow: 3px 3px #009FE0;
+    margin-bottom:10px;
+    background: rgba(128, 223, 255, 0.27);
+}
+
+.tgGroupMode {
+    margin-bottom: 1em;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tgGroupMode label, .tgGroupMode input {
+    vertical-align: middle;
+}
+
+.tgGroupMode input {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.tgGroupMode .AssocGroupOr,
+#idFieldSetGroup .AssocGroupOr {
+    margin-left: 12px;
+    
+}
+
+
+fieldset { border:1px solid #25A6E1; margin-top:5px; margin-bottom:5px; }
+
+legend {
+    padding: 0.2em 0.5em;
+    border:1px solid #25A6E1;
+    color:#009FE0;
+    background-color:#fff;
+    text-align:center;
+    font-weight: bold;
+}

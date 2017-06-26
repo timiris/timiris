@@ -1,0 +1,41 @@
+1- On doit se baser sur le champ Oper_type pour différencier entre les compteur de consommation et ceux de bonus (a ignorer).
+        OK
+2- Se baser sur le champ MEASUR_ID pour l'agrégation des compteurs de consommation.
+
+Modification DB
+
+
+-   Ajouter une nouvelle ligne dans la table ref_compteurs pour le type de bonus point de fidélité :
+ 
+825;"Point de fidélité";1000;1;"1000"
+
+
+-   Modifier les libelles out et in dans transfert par Transfert sortant et entrant (code type dans la table ref_comteur = 12 et 13)
+
+-   Création de la séquence Bonus
+CREATE SEQUENCE public.cmp_bonus_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+
+-   CREATE SEQUENCE public.cmp_grp_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+-   ALTER TABLE public.ref_nature  ADD COLUMN event boolean NOT NULL DEFAULT true;
+-   Ajouter la table ref_etat_campagne
+-   Ajouter les champs  type_bonus, nbr_cible, nbr_teasing, chez_profil, profil_saisie dans la table app_campagne
+
+-   Création de la table app_campagne_groupe
+-   Création de la table app_campagne_declencheur
+-   Création de la table app_campagne_cible
+-   Création de la table app_campagne_exclus
+-   Création de la table ref_type_donnee_event;
+-   Création de la table ref_event;
+-   Création de la table app_campagne_bonus

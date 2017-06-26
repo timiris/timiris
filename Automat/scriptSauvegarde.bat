@@ -1,0 +1,1 @@
+C:/Program Files/PostgreSQL/9.5/bin\pg_dump.exe --host localhost --port 5432 --username "postgres" --no-password  --format custom --blobs --verbose --file "J:\totalDB_25042016_NvVers.backup" "timiris"

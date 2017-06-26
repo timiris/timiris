@@ -1,0 +1,461 @@
+.sky-tabs,
+.sky-tabs * {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: 0;
+    background: none;
+}
+.sky-tabs {
+    position: relative;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0;
+    text-align: left;
+    color: #666;
+}
+.sky-tabs > input {
+    position: absolute;
+    display: none;
+}
+.sky-tabs > label {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding: 1px;
+    padding-top: 0;
+    padding-left: 0;
+    font-size: 13px;
+    line-height: 45px;
+    cursor: pointer;
+}
+.sky-tabs > label.inverse {
+    float: right;
+    padding-right: 0;
+    padding-left: 1px;
+}
+.sky-tabs > label.disabled {
+    cursor: default;
+}
+.sky-tabs > label span {
+    display: block;
+    padding: 2px;
+    background: rgba(255,255,255,0.9);
+}
+.sky-tabs > label span span {
+    padding: 0 20px;
+    background: transparent;
+    transition: background 0.4s, color 0.4s;
+    -o-transition: background 0.4s, color 0.4s;
+    -ms-transition: background 0.4s, color 0.4s;
+    -moz-transition: background 0.4s, color 0.4s;
+    -webkit-transition: background 0.4s, color 0.4s;	
+}
+.sky-tabs > label:hover span span {
+    background: #2da5da;
+    color: #fff;	
+}
+.sky-tabs > label.disabled span span {
+    background: transparent;
+    color: inherit;
+}
+.sky-tabs > input:checked + label {
+    cursor: default;
+}
+.sky-tabs > input:checked + label span span {
+    background: #2da5da;
+    color: #fff;
+}
+.sky-tabs > .switcher {
+    display: none;
+}
+.sky-tabs > .switcher a {
+    display: block;
+    margin: 0 -20px;
+    padding: 0 5px;
+    text-decoration: none;
+    color: inherit;
+}
+.sky-tabs > ul {
+    list-style: none;
+    position: relative;
+    display: block;
+    font-size: 13px;
+}
+.sky-tabs > ul > li {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: auto;
+    padding: 20px 25px 25px;
+    background: rgba(255,255,255,0.9);
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    opacity: 0;
+    -o-transform-origin: 0% 0%;
+    -ms-transform-origin: 0% 0%;
+    -moz-transform-origin: 0% 0%;
+    -webkit-transform-origin: 0% 0%;
+    -o-transition: opacity 0.8s, -o-transform 0.8s;	
+    -ms-transition: opacity 0.8s, -ms-transform 0.8s;	
+    -moz-transition: opacity 0.8s, -moz-transform 0.8s;	
+    -webkit-transition: opacity 0.8s, -webkit-transform 0.8s;
+}
+.sky-tabs > .sky-tab-content-1:checked ~ ul > .sky-tab-content-1,
+.sky-tabs > .sky-tab-content-2:checked ~ ul > .sky-tab-content-2,
+.sky-tabs > .sky-tab-content-3:checked ~ ul > .sky-tab-content-3,
+.sky-tabs > .sky-tab-content-4:checked ~ ul > .sky-tab-content-4,
+.sky-tabs > .sky-tab-content-5:checked ~ ul > .sky-tab-content-5,
+.sky-tabs > .sky-tab-content-6:checked ~ ul > .sky-tab-content-6,
+.sky-tabs > .sky-tab-content-7:checked ~ ul > .sky-tab-content-7,
+.sky-tabs > .sky-tab-content-8:checked ~ ul > .sky-tab-content-8,
+.sky-tabs > .sky-tab-content-9:checked ~ ul > .sky-tab-content-9 {
+    position: relative;
+    z-index: 1;
+    opacity: 1;
+}
+
+
+/**/
+/* positions */
+/**/
+.sky-tabs-pos-top-center {
+    text-align: center;
+}
+.sky-tabs-pos-top-right {
+    text-align: right;
+}
+.sky-tabs-pos-top-right > label {
+    padding-right: 0;
+    padding-left: 1px;
+}
+.sky-tabs-pos-top-justify > label {
+    padding-right: 0;
+    padding-left: 1px;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-2 > label {
+    width: 50%;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-3 > label {
+    width: 33.33%;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-4 > label {
+    width: 25%;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-5 > label {
+    width: 20%;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-6 > label {
+    width: 16.66%;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-7 > label {
+    width: 14.28%;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-8 > label {
+    width: 12.5%;
+}
+.sky-tabs-pos-top-justify.sky-tabs-amount-9 > label {
+    width: 11.11%;
+}
+.sky-tabs-pos-top-justify > input:first-child + label {
+    padding-left: 0;
+}
+.sky-tabs-pos-left > label,
+.sky-tabs-pos-right > label {
+    display: block;
+    width: 25%;
+    float: left;
+    clear: left;
+    margin-right: 0;
+}
+.sky-tabs-pos-right > label {
+    float: right;
+    clear: right;
+}
+.sky-tabs-pos-left > ul {
+    margin-left: 25%;
+}
+.sky-tabs-pos-right > ul {
+    margin-right: 25%;
+}
+.sky-tabs-pos-right > label {
+    padding-right: 0;
+    padding-left: 1px;
+}
+.sky-tabs-pos-top-center > ul > li,
+.sky-tabs-pos-top-justify > ul > li {
+    -o-transform-origin: 50% 0%;
+    -ms-transform-origin: 50% 0%;
+    -moz-transform-origin: 50% 0%;
+    -webkit-transform-origin: 50% 0%;
+}
+.sky-tabs-pos-right > ul > li,
+.sky-tabs-pos-top-right > ul > li {
+    -o-transform-origin: 100% 0%;
+    -ms-transform-origin: 100% 0%;
+    -moz-transform-origin: 100% 0%;
+    -webkit-transform-origin: 100% 0%;
+}
+
+
+/**/
+/* animations */
+/**/
+.sky-tabs-anim-slide-up > ul > li {
+    -o-transform: translateY(-15%);
+    -ms-transform: translateY(-15%);
+    -moz-transform: translateY(-15%);
+    -webkit-transform: translateY(-15%);
+}
+.sky-tabs-anim-slide-right > ul > li {
+    -o-transform: translateX(15%);
+    -ms-transform: translateX(15%);
+    -moz-transform: translateX(15%);
+    -webkit-transform: translateX(15%);
+}
+.sky-tabs-anim-slide-down > ul > li {
+    -o-transform: translateY(15%);
+    -ms-transform: translateY(15%);
+    -moz-transform: translateY(15%);
+    -webkit-transform: translateY(15%);
+}
+.sky-tabs-anim-slide-left > ul > li {
+    -o-transform: translateX(-15%);
+    -ms-transform: translateX(-15%);
+    -moz-transform: translateX(-15%);
+    -webkit-transform: translateX(-15%);
+}
+.sky-tabs-anim-slide-up-left > ul > li {
+    -o-transform: translate(-15%,-15%);
+    -ms-transform: translate(-15%,-15%);
+    -moz-transform: translate(-15%,-15%);
+    -webkit-transform: translate(-15%,-15%);
+}
+.sky-tabs-anim-slide-up-right > ul > li {
+    -o-transform: translate(15%,-15%);
+    -ms-transform: translate(15%,-15%);
+    -moz-transform: translate(15%,-15%);
+    -webkit-transform: translate(15%,-15%);	
+}
+.sky-tabs-anim-slide-down-right > ul > li {
+    -o-transform: translate(15%,15%);
+    -ms-transform: translate(15%,15%);
+    -moz-transform: translate(15%,15%);
+    -webkit-transform: translate(15%,15%);	
+}
+.sky-tabs-anim-slide-down-left > ul > li {
+    -o-transform: translate(-15%,15%);
+    -ms-transform: translate(-15%,15%);
+    -moz-transform: translate(-15%,15%);
+    -webkit-transform: translate(-15%,15%);	
+}
+.sky-tabs > .sky-tab-content-1:checked ~ ul > .sky-tab-content-1,
+.sky-tabs > .sky-tab-content-2:checked ~ ul > .sky-tab-content-2,
+.sky-tabs > .sky-tab-content-3:checked ~ ul > .sky-tab-content-3,
+.sky-tabs > .sky-tab-content-4:checked ~ ul > .sky-tab-content-4,
+.sky-tabs > .sky-tab-content-5:checked ~ ul > .sky-tab-content-5,
+.sky-tabs > .sky-tab-content-6:checked ~ ul > .sky-tab-content-6,
+.sky-tabs > .sky-tab-content-7:checked ~ ul > .sky-tab-content-7,
+.sky-tabs > .sky-tab-content-8:checked ~ ul > .sky-tab-content-8,
+.sky-tabs > .sky-tab-content-9:checked ~ ul > .sky-tab-content-9,
+.sky-tabs > .sky-tab-content-13:checked ~ ul > .sky-tab-content-13 {
+    -o-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    -webkit-transform: translate(0,0);
+}
+
+.sky-tabs-anim-scale > ul > li {
+    -o-transform: scale(0.1,0.1);
+    -ms-transform: scale(0.1,0.1);
+    -moz-transform: scale(0.1,0.1);
+    -webkit-transform: scale(0.1,0.1);
+}
+.sky-tabs-anim-scale > .sky-tab-content-1:checked ~ ul > .sky-tab-content-1,
+.sky-tabs-anim-scale > .sky-tab-content-2:checked ~ ul > .sky-tab-content-2,
+.sky-tabs-anim-scale > .sky-tab-content-3:checked ~ ul > .sky-tab-content-3,
+.sky-tabs-anim-scale > .sky-tab-content-4:checked ~ ul > .sky-tab-content-4,
+.sky-tabs-anim-scale > .sky-tab-content-5:checked ~ ul > .sky-tab-content-5,
+.sky-tabs-anim-scale > .sky-tab-content-6:checked ~ ul > .sky-tab-content-6,
+.sky-tabs-anim-scale > .sky-tab-content-7:checked ~ ul > .sky-tab-content-7,
+.sky-tabs-anim-scale > .sky-tab-content-8:checked ~ ul > .sky-tab-content-8,
+.sky-tabs-anim-scale > .sky-tab-content-9:checked ~ ul > .sky-tab-content-9,
+.sky-tabs-anim-scale > .sky-tab-content-13:checked ~ ul > .sky-tab-content-13 {
+    -o-transform: scale(1,1);
+    -ms-transform: scale(1,1);
+    -moz-transform: scale(1,1);
+    -webkit-transform: scale(1,1);
+}
+
+.sky-tabs-anim-rotate > ul > li {
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+.sky-tabs-anim-rotate.sky-tabs-pos-right > ul > li,
+.sky-tabs-anim-rotate.sky-tabs-pos-top-right > ul > li {
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+}
+.sky-tabs-anim-rotate > .sky-tab-content-1:checked ~ ul > .sky-tab-content-1,
+.sky-tabs-anim-rotate > .sky-tab-content-2:checked ~ ul > .sky-tab-content-2,
+.sky-tabs-anim-rotate > .sky-tab-content-3:checked ~ ul > .sky-tab-content-3,
+.sky-tabs-anim-rotate > .sky-tab-content-4:checked ~ ul > .sky-tab-content-4,
+.sky-tabs-anim-rotate > .sky-tab-content-5:checked ~ ul > .sky-tab-content-5,
+.sky-tabs-anim-rotate > .sky-tab-content-6:checked ~ ul > .sky-tab-content-6,
+.sky-tabs-anim-rotate > .sky-tab-content-7:checked ~ ul > .sky-tab-content-7,
+.sky-tabs-anim-rotate > .sky-tab-content-8:checked ~ ul > .sky-tab-content-8,
+.sky-tabs-anim-rotate > .sky-tab-content-9:checked ~ ul > .sky-tab-content-9,
+.sky-tabs-anim-rotate > .sky-tab-content-13:checked ~ ul > .sky-tab-content-13 {
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+}
+
+.sky-tabs-anim-flip > ul {
+    perspective: 2000px;
+    -o-perspective: 2000px;
+    -ms-perspective: 2000px;
+    -moz-perspective: 2000px;
+    -webkit-perspective: 2000px;
+    perspective-origin: 50% 50%;
+    -o-perspective-origin: 50% 50%;
+    -ms-perspective-origin: 50% 50%;
+    -moz-perspective-origin: 50% 50%;
+    -webkit-perspective-origin: 50% 50%;
+}
+.sky-tabs-anim-flip > ul > li {
+    -o-transform: rotateX(-90deg);
+    -ms-transform: rotateX(-90deg);
+    -moz-transform: rotateX(-90deg);
+    -webkit-transform: rotateX(-90deg);
+}
+.sky-tabs-anim-flip.sky-tabs-pos-left > ul > li {
+    -o-transform: rotateY(90deg);
+    -ms-transform: rotateY(90deg);
+    -moz-transform: rotateY(90deg);
+    -webkit-transform: rotateY(90deg);	
+}
+.sky-tabs-anim-flip.sky-tabs-pos-right > ul > li {
+    -o-transform: rotateY(-90deg);
+    -ms-transform: rotateY(-90deg);
+    -moz-transform: rotateY(-90deg);
+    -webkit-transform: rotateY(-90deg);
+}
+.sky-tabs-anim-flip > .sky-tab-content-1:checked ~ ul > .sky-tab-content-1,
+.sky-tabs-anim-flip > .sky-tab-content-2:checked ~ ul > .sky-tab-content-2,
+.sky-tabs-anim-flip > .sky-tab-content-3:checked ~ ul > .sky-tab-content-3,
+.sky-tabs-anim-flip > .sky-tab-content-4:checked ~ ul > .sky-tab-content-4,
+.sky-tabs-anim-flip > .sky-tab-content-5:checked ~ ul > .sky-tab-content-5,
+.sky-tabs-anim-flip > .sky-tab-content-6:checked ~ ul > .sky-tab-content-6,
+.sky-tabs-anim-flip > .sky-tab-content-7:checked ~ ul > .sky-tab-content-7,
+.sky-tabs-anim-flip > .sky-tab-content-8:checked ~ ul > .sky-tab-content-8,
+.sky-tabs-anim-flip > .sky-tab-content-9:checked ~ ul > .sky-tab-content-9,
+.sky-tabs-anim-flip > .sky-tab-content-13:checked ~ ul > .sky-tab-content-13 {
+    -o-transform: rotateX(0deg);
+    -ms-transform: rotateX(0deg);
+    -moz-transform: rotateX(0deg);
+    -webkit-transform: rotateX(0deg);
+    -o-transition-delay: 0.2s;
+    -ms-transition-delay: 0.2s;
+    -moz-transition-delay: 0.2s;
+    -webkit-transition-delay: 0.2s;
+}
+
+.sky-tabs .typography p {
+    margin: 20px 0 0 0;
+    padding: 0;
+    line-height: 20px;
+    text-align: left;
+}
+.sky-tabs .typography ul,
+.sky-tabs .typography ol {
+    list-style: none;
+    margin: 20px 0 0 0;
+    padding: 0;
+    line-height: 20px;
+}
+.sky-tabs .typography li {
+    position: relative;
+    margin-top: 5px;
+    padding-left: 20px;
+}
+.sky-tabs .typography li ul,
+.sky-tabs .typography li ol {
+    margin-top: 5px;
+}
+.sky-tabs .typography ul li:before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: #333;
+}
+.sky-tabs .typography ol {
+    counter-reset: list1;
+}
+.sky-tabs .typography ol > li:before {
+    counter-increment:list1;
+    content: counter(list1)'.';
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #333;
+}
+.sky-tabs .typography a {
+    text-decoration: underline;
+    color: #2da5da;
+}
+.sky-tabs .typography a:hover {
+    text-decoration: none;
+}
+.sky-tabs .typography .pic {
+    padding: 4px;
+    border: 1px dotted #ccc;
+}
+.sky-tabs .typography .pic img {
+    display: block;
+}
+.sky-tabs .typography .pic-right {
+    float: right;
+    margin: 0 0 10px 20px;
+}
+.sky-tabs .typography .link {
+    text-decoration: underline;
+    color: #2da5da;
+    cursor: pointer;
+}
+.sky-tabs .typography .link:hover {
+    text-decoration: none;
+}
+.sky-tabs .typography .text-center {
+    text-align: center;
+}
+.sky-tabs .typography .text-right {
+    text-align: right;
+}
+
+
+/**/
+/* icons */
+/**/
+.sky-tabs > label .fa {
+    display: block;
+    float: left;
+    width: 18px;
+    margin: 0 12px 0 -6px;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 45px;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+}
