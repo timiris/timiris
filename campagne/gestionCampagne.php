@@ -78,6 +78,10 @@ try {
             break;
         case 'rejeter':
             $newStatus = CMP_REJETEE;
+            $rqCr = $connection->query('SELECT fk_id_profil FROM sys_users WHERE id = '.$createurId);
+            $rqCr = $rqCr->fetch(PDO::FETCH_OBJ);
+            $pf_createur = $rqCr->fk_id_profil;
+            $cnd = " , chez_profil = " . $pf_createur;
             $tbRetour['message'] = "Campagne rejeter avec succès";
             $body = "Bonjour $createurNom,<br>La campagne : ' ($nomCmp) , que vous avez créée est rejetée par : $acteurName.<br>
                     Le motif de rejet est : $motif.<br>
