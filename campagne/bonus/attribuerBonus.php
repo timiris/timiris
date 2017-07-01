@@ -107,8 +107,10 @@ try {
                 $bns_values = implode(', ', $bns_values);
                 eval("\$sms = \"$sms\";");
                 $ret = sendSMS($msisdn, $sms, 'PromoMattel', $enc, 'bonus');
-                if ($ret == 1)
-                    $connection->query("UPDATE app_bonus SET dt_sms = '" . date('YmdHis') . "', is_lang_ar ='" . $bonus['lang'] . "' WHERE id = $idBns");
+                if ($ret == 1){
+                    $isl = ($bonus['lang'])?'true':'false';                        
+                    $connection->query("UPDATE app_bonus SET dt_sms = '" . date('YmdHis') . "', is_lang_ar ='$isl' WHERE id = $idBns");
+                }
             }
         }
 
