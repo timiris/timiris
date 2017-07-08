@@ -12,7 +12,7 @@ $conf_bonus_pp = array(
     6 => array(36 => array('montant' => '% Montant', 'cout' => '% Coût'), 92 => array('montant' => '% C.Principal'), 1000 => array('montant' => '% Montant', 'cout' => '% Coût')), //Transfert
     7 => array(36 => array('montant' => '% C.Principal'), 92 => array('montant' => '% C.Principal'), 25 => array('volume' => '% Volume'), 95 => array('volume' => '% Volume'), 1000 => array('montant' => '% C.Principal')), //Data en méga
     8 => array(36 => array('montant' => '% Coùt'), 92 => array('montant' => '% C.Principal'), 1000 => array('montant' => '% Coùt')), //Service
-        12 => array(36 => array('consommation' => '% C.Principal'), 92 => array('montant' => '% C.Principal'), 1000 => array('consommation' => '% C.Principal'))  //Consommation
+    12 => array(36 => array('consommation' => '% C.Principal'), 92 => array('montant' => '% C.Principal'), 1000 => array('consommation' => '% C.Principal'))  //Consommation
 );
 
 $conf_bonus_pp_cumule = array(

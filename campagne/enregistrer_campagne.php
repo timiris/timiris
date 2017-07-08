@@ -21,6 +21,29 @@ try {
     require_once $rep . "ciblage/fn/fn_generateArrayParams.php";
     require_once $rep . "ciblage/fn/fn_getDateRel.php";
     $tbCmp = json_decode($_POST["cmp"], true);
+    $tbGle = $tbCmp['glb'];
+    $tbCbl = $tbCmp['cbl'];
+    $tbBns = $tbCmp['bns'];
+    $cmp_dt_from = ($tbGle['cmp_dt_from'] == '') ? 'NULL' : "'" . $tbGle['cmp_dt_from'] . "'";
+    $cmp_dt_fin = $tbGle['cmp_dt_fin'];
+    if ($tbGle['cmp_dt_from'] == '')
+        $cdf = date('YmdHi');
+    else {
+        $cdf = str_replace('-', '', $tbGle['cmp_dt_from']);
+        $cdf = str_replace(' ', '', $cdf);
+        $cdf = str_replace(':', '', $cdf);
+        $cdf = str_replace("'", '', $cdf);
+//        $cdf = (int) $cdf;
+    }
+    $cdt = str_replace('-', '', $cmp_dt_fin);
+    $cdt = str_replace(' ', '', $cdt);
+    $cdt = str_replace(':', '', $cdt);
+//    $cdt = (int) $cdt;
+    if ($cdt <= $cdf) {
+        $tbRetour['message'] = 'Date début ou fin incorrecte !!!';
+        echo json_encode($tbRetour);
+        exit();
+    }
     $hasWl = $hasBl = 'false';
     $ar_lb = $ar_ln = array();
     $nbrCibleCmp = 0;
@@ -48,10 +71,6 @@ try {
         }
     }
     $connection->query('BEGIN');
-    $tbGle = $tbCmp['glb'];
-    $tbCbl = $tbCmp['cbl'];
-    $tbBns = $tbCmp['bns'];
-
     // Enregistrement de la cible
     if (!isset($tbCbl["cible_id"])) {
         $associationGroupe = $tbCbl["associationGroupe"];
@@ -68,8 +87,6 @@ try {
 
     // Enregistrement de la campagne
     $cmp_nom = str_replace("'", "''", $tbGle['cmp_nom']);
-    $cmp_dt_from = ($tbGle['cmp_dt_from'] == '') ? 'NULL' : "'" . $tbGle['cmp_dt_from'] . "'";
-    $cmp_dt_fin = $tbGle['cmp_dt_fin'];
     $cmp_teasingAr = str_replace("'", "''", $tbGle['cmp_teasingAr']);
     $cmp_teasingFr = str_replace("'", "''", $tbGle['cmp_teasingFr']);
     $cmp_sms_bonusAr = str_replace("'", "''", $tbGle['cmp_sms_bonusAr']);

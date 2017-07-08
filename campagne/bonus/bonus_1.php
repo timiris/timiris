@@ -16,7 +16,7 @@ if (!isset($idBonus))
         <select id="idTypeBonus<?php echo $idBonus; ?>" style="width:180px;" class="selectTypeBonus">
             <option value = "1">Bonus Libre</option>
             <?php
-            if(isset($_POST['type_d']) && ($_POST['type_d'] != 'fidelite'))
+            if (isset($_POST['type_d']) && ($_POST['type_d'] != 'fidelite'))
                 echo '<option value = "2">Bonus Proportionnel</option>';
             ?>
         </select>

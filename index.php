@@ -1,22 +1,13 @@
+<?php
+session_start();
+?>
 <html>
     <head>
         <title>TIMIRIS</title>
         <meta charset="UTF-8">
-        <link href="css/page_principale.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/frm.cnx.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/elements.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/ciblage.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/buttons.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/menu.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/tabs.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/tabs_chrome.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="css/jquery-ui-1.9.2.custom.min.css" media="all" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/multiple-select.css" />
-        <link rel="stylesheet" type="text/css" href="css/notification.css" />
-        <link rel="stylesheet" type="text/css" href="css/styleVO.css" />
-        <link rel="stylesheet" type="text/css" href="css/tags.css" />
-        <link rel="icon" type="image/png" href="img/favTim.png" />
+        <?php
+        require_once 'requiredCSS.conf';
+        ?>
     </head>
     <body>
         <div id="header" style="display: block;">
@@ -29,7 +20,6 @@
             </table>			
         </div>
         <?php
-        session_start();
         $message = "Connexion";
         $s_user = (isset($_SESSION["user"]["id"]) && !empty($_SESSION["user"]["id"])) ? true : false;
         if (isset($_GET['message'])) {
@@ -39,20 +29,7 @@
 
         if ($s_user) {
             require_once 'fn_formatter_date.php';
-            ?>
-            <script src="js/jquery-1.8.3.js"></script>
-            <script src="js/jquery-ui-1.9.2.custom.min.js"></script>
-            <script src="js/tabs.js"></script>
-            <script src="js/tabs_chrome.js"></script>
-            <script src="js/jquery.canvasjs.min.js"></script>
-            <script src="js/timePicker.js"></script>
-            <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.min.js"></script>
-            <script src="js/DataTables/extensions/Select/js/dataTables.select.min.js"></script>
-            <script src="js/DataTables/media/js/jquery.dataTables.js"></script>
-            <script src="js/DataTables/extensions/Buttons/js/dataTables.buttons.min.js"></script>
-            <script src="js/ajax.js"></script>
-            <script src="js/multiple-select.js"></script>
-            <?php
+            require_once 'requiredJS.conf';
         }
 
         $username = $password = "";

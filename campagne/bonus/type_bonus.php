@@ -39,7 +39,7 @@ if (isset($_POST["natBonus"]) and !empty($_POST["natBonus"])) {
             $arrConf = $conf_bonus_pp_cumule;
         else
             $arrConf = $conf_bonus_pp;
-            
+
         if ($idNature)
             foreach ($arrConf[$idNature][$natBonus] as $k => $v)
                 $retour['unite'] .= '<option value =' . $k . ' >' . $v . '</option>';
