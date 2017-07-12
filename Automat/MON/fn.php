@@ -1,8 +1,9 @@
 <?php
 
 function GenInfosCdr($licdr = array(), $config, $fileName) {
-    global $rep_log_ignored;
-    if ($licdr['service'] != "148211097" || $licdr['cout'] == '')
+    global $rep_log_ignored, $monServices ;
+    //if ($licdr['service'] != "148211097" || $licdr['cout'] == '')
+    if (!in_array($licdr['service'], $monServices))
         return $licdr;
     $licdr['msisdn'] = verifierNumero($licdr['msisdn'], $config);
     if (strlen($licdr['msisdn']) == $config['ln_int'] &&
@@ -68,7 +69,7 @@ function GenRq(&$tb, $tbc) {
 
     if (!isset($allRqAttr['service'][$MSISDN]['heure']) || $allRqAttr['service'][$MSISDN]['heure'] < $tmCdr) {
         $allRqAttr['service'][$MSISDN]['heure'] = $tmCdr;
-        $allRqAttr['service'][$MSISDN]['req_val'] = $tb['profil']. '||' . substr($tb['status'], 0, 1). '||' . $tb['service'];
+        $allRqAttr['service'][$MSISDN]['req_val'] = $tb['profil'] . '||' . substr($tb['status'], 0, 1) . '||' . $tb['service'];
     }
 }
 
@@ -98,9 +99,9 @@ function execute_attribut($tbMSISDN, $allRqAttr, $connection) {
                     $req = '';
                     if (isset($tbAttrMSISDNdate[$ms])) {
                         if ($tbAttrMSISDNdate[$ms]['dt_profil'] < $tb['heure'])
-                            $cnd[] = "dt_profil = '" . $tb['heure'] . "', profil = " . $ChVals[0] ;
+                            $cnd[] = "dt_profil = '" . $tb['heure'] . "', profil = " . $ChVals[0];
                         if ($tbAttrMSISDNdate[$ms]['dt_status'] < $tb['heure'])
-                            $cnd[] = "dt_status = '" . $tb['heure'] . "', status = " . $ChVals[1] ;
+                            $cnd[] = "dt_status = '" . $tb['heure'] . "', status = " . $ChVals[1];
                         if ($tbAttrMSISDNdate[$ms]['dt_service'] < $tb['heure'])
                             $cnd[] = "dt_service = '" . $tb['heure'] . "', service = '" . $ChVals[2] . "'";
                         if (count($cnd))

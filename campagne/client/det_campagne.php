@@ -9,10 +9,10 @@ if (!isset($_POST['idCmp']))
     exit();
 try {
     $idCmp = (int) $_POST['idCmp'];
-    $numero = '222' . $_POST['numero'];
     require_once $rep . "conn/connection.php";
     require_once $rep . 'fn_formatter_date.php';
     require_once $rep . 'defs.php';
+    $numero = INDICATIF . substr($_POST['numero'], -LNF_NAT);
     $arr_sms = $arr_bns = array();
     $rqSMS = "select broadcast, sms_bonus_ar, sms_ar, sms_bonus_fr, sms_fr, dt_teasing, is_lang_ar
     FROM app_campagne ac

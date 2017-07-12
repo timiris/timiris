@@ -18,6 +18,7 @@ require_once $rep . "defs.php";
 require_once "mail/envoyer_mail.php";
 
 $config = $NewPos = $NewVal = $grp_dec = $bns_dec = $event_corsp = $cmp_lim = $arr_valorisation = $arrCible = $arrGT = array();
+$monServices = array('1257446764', '1457450091', '1857361948', '1857447070' , '148211097');
 
 $NewPos['compteur1'] = 105;
 $NewPos['cout1'] = 107;
@@ -59,8 +60,8 @@ $config['code_pays'] = '222';
 $config['ln_int'] = 11;
 $config['ln_nat'] = 8;
 $config['ln_imsi'] = 15;
-$config['nb_files'] = 1;
-$config['nbrFichierCharge'] = 2;
+$config['nb_files'] = 6;
+$config['nbrFichierCharge'] = 60;
 
 //***********************
 //***********************

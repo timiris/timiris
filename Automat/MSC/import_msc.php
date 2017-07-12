@@ -5,13 +5,13 @@ if (!isset($rep))
 
 try {
     require_once '../connection.php';
+    require_once '../correspondance.php';
+    require_once 'fn.php';
+    include('config.php');
     $reqVerif = "SELECT * FROM sys_cron WHERE type = '" . $config['cdrName'] . "' and etat = TRUE";
     $resVerif = $connection->query($reqVerif);
     if (!$resVerif->rowCount())
         exit();
-    require_once '../correspondance.php';
-    require_once 'fn.php';
-    include('config.php');
     $FileCdrs = array();
 
     echo "\r\nDébut parsing, process : '" . getmypid() . "'  " . date("Ymd H:i:s");

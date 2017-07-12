@@ -92,9 +92,5 @@ $config['agreg']['4247511'] ='hybrid3';
 $config['agreg']['4247610'] ='hybrid3';
 $config['agreg']['4247617'] ='hybrid3';
 
-
-$config['agreg']['1257446764'] ='hybrid1';
-$config['agreg']['1457450091'] ='hybrid1';
-$config['agreg']['1857361948'] ='hybrid1';
-$config['agreg']['1857447070'] ='hybrid1';
+$operationsIdExclus = array('4059506', '4059700', '4050022');
 ?>

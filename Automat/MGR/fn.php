@@ -1,10 +1,8 @@
 <?php
 
 function GenInfosCdr($licdr = array(), $config, $fileName) {
-    global $rep_log_ignored;
-    if ($licdr['service'] == "148211097")
-        return $licdr;
-    if ($licdr['msisdn'] == "" || $licdr['OperationID'] == 4059506 || $licdr['OperationID'] == 4059700 || $licdr['OperationID'] == 4050022 || ($licdr['OperationID'] == "" && $licdr['cout'] == ""))
+    global $rep_log_ignored, $monServices;
+    if ($licdr['msisdn'] == "" || in_array($licdr['service'], $monServices) || in_array($licdr['OperationID'], $operationsIdExclus) || ($licdr['OperationID'] == "" && $licdr['cout'] == ""))
         return $licdr;
     $licdr['msisdn'] = verifierNumero($licdr['msisdn'], $config);
     $licdr['msisdn_autre'] = verifierNumero($licdr['msisdn_autre'], $config);
@@ -27,8 +25,6 @@ function GenRq(&$tb, $tbc) {
     // Generation Req Attribut
     global $allRq, $tbMSISDN, $cdrsFile, $tbAllTables, $rep_log, $config, $allRqAttr;
     $tmCdr = $tb['heure'];
-    if($tb['msisdn'] == '22237283981')
-        $tb['msisdn'] = '22233222255';
     $MSISDN = $tb['msisdn'];
     $MSISDN_AU = $tb['msisdn_autre'];
     $dj = substr($tmCdr, 0, 8);
