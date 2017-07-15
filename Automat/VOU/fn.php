@@ -22,7 +22,7 @@ function GenInfosCdr($licdr = array(), $config, $fileName) {
     return $licdr;
 }
 
-function GenRq(&$tb, $tbc) {
+function GenRq(&$tb, $tbc, $newEvent = 0) {
     // Generation Req Attribut
     global $allRq, $tbMSISDN, $cdrsFile, $tbAllTables, $allRqAttr, $rep_log, $config, $new_mechili, $old_mechili;
     $dj = substr($tb['heure'], 0, 8);
@@ -62,7 +62,7 @@ function GenRq(&$tb, $tbc) {
 //    $tb['canalrecharge'] = isset($config['canal'][$tb['canal']]) ? $config['canal'][$tb['canal']] : (isset($config['access'][$tb['canal']]) ? strtolower($config['access'][$tb['canal']]) : '0');
     if ($tb['canal']) { //Recharge
         foreach ($tb['prefix'] as $prfx => $val) {
-            if ($prfx == "total") { //Tous type de recharge (mechili, facial, ws et autre)
+            if ($prfx == "total" && !$newEvent) { //Tous type de recharge (mechili, facial, ws et autre)
                 fn_gen_rq("data_recharge_valeur_$prfx", $MSISDN, $tabChTot);
                 fn_gen_rq("data_recharge_nombre_$prfx", $MSISDN, $tabChNbr);
             }
@@ -70,8 +70,10 @@ function GenRq(&$tb, $tbc) {
             if (isset($config['access'][$tb['access']])) {
                 if ($config['access'][$tb['access']] == 'ValeurFacial') {
                     // Total sur le canal de recharge facial
-                    fn_gen_rq("data_recharge_valeur_" . $prfx . "_total", $MSISDN, $tabChTot);
-                    fn_gen_rq("data_recharge_nombre_" . $prfx . "_total", $MSISDN, $tabChNbr);
+                    if (!$newEvent) {
+                        fn_gen_rq("data_recharge_valeur_" . $prfx . "_total", $MSISDN, $tabChTot);
+                        fn_gen_rq("data_recharge_nombre_" . $prfx . "_total", $MSISDN, $tabChNbr);
+                    }
 
                     // détail par valeur facial
                     // Vérifier si la table existe ou non
@@ -84,8 +86,10 @@ function GenRq(&$tb, $tbc) {
                         fclose($fo);
                     }
                 } elseif ($config['access'][$tb['access']] == 'Mechili') {
-                    fn_gen_rq("data_recharge_valeur_mechili_total", $MSISDN, $tabChTot);
-                    fn_gen_rq("data_recharge_nombre_mechili_total", $MSISDN, $tabChNbr);
+                    if (!$newEvent) {
+                        fn_gen_rq("data_recharge_valeur_mechili_total", $MSISDN, $tabChTot);
+                        fn_gen_rq("data_recharge_nombre_mechili_total", $MSISDN, $tabChNbr);
+                    }
                     $plage = "";
                     foreach ($config['mechili'] as $key => $value) {
                         if ($tb['val_facial'] <= $value['sup'] && $tb['val_facial'] >= $value['inf']) {
@@ -115,7 +119,7 @@ function GenRq(&$tb, $tbc) {
                 fclose($fo);
             }
         }
-        if (!isset($allRqAttr['recharge'][$MSISDN]['heure']) || $allRqAttr['recharge'][$MSISDN]['heure'] < $tmCdr) {
+        if (!$newEvent && (!isset($allRqAttr['recharge'][$MSISDN]['heure']) || $allRqAttr['recharge'][$MSISDN]['heure'] < $tmCdr)) {
             $allRqAttr['recharge'][$MSISDN]['heure'] = $tmCdr;
             $allRqAttr['recharge'][$MSISDN]['req_val'] = $tb['balance']
                     . '||' . $tb['profil']

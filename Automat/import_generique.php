@@ -10,11 +10,12 @@ try {
         exit();
     require_once 'correspondance.php';
     require_once 'tbAllTables.php';
-    require_once 'tbCompteurModel.php';
+//    require_once 'tbCompteurModel.php';
 
     $config['pos'] = $NewPos;
     $config['val'] = $NewVal;
     $idx_bns = 0;
+    $reqGlobal = '';
 
     echo "\r\nDébut parsing, process : '" . getmypid() . "'  " . date("Ymd H:i:s");
     $rep_chargementLocal = $rep_chargement . strtolower($config['cdrName']) . '/';
@@ -67,20 +68,22 @@ try {
 
             $dtFirst = date('YmdHis');
             $dtLast = '';
-            $nbrLigne = $nbrLigneCons = 0;
+            $nbrLigne = $nbrLigneCons = $nbrEligibility = 0;
             $fichier = $rep_chargementLocal . $fileName;
             echo "\n\r" . $fileName . ", H:" . date('His');
             $lg_max = $config['val']['max'];
             $fileContent = file($fichier);
             $nbLContent = count($fileContent);
-            $nbLnLinux = $nbLContent; 
-//            $nbLnLinux = exec("cat $fichier | wc -l");
+            if ($repGlobal != '')
+                $nbLnLinux = $nbLContent;
+            else
+                $nbLnLinux = exec("cat $fichier | wc -l");
             if (!$nbLnLinux) { // reject the file
                 echo "\r\nLe fichier : $fileName est vide";
                 $nvEmpNom = $rep_file_rejected . $fileName;
                 $fs = rename($fichier, $nvEmpNom);
                 unset($tbConsid[$keyFile]);
-                $allRq = $cdr = $tbMSISDN = $allRqAttr = $nbrFile = $af = $arr_glb_bonus = array();
+//                $allRq = $cdr = $tbMSISDN = $allRqAttr = $nbrFile = $af = $arr_glb_bonus = array();
                 $fileName = '';
             } elseif ($nbLContent != $nbLnLinux) {   //ignore the file
                 echo "\r\nLe fichier : $fileName est sauté";
@@ -109,15 +112,12 @@ try {
                             if (isset($RetourGenInfosCdr['considere'])) {
                                 GenRq($RetourGenInfosCdr, $tb_crspd);
                                 if (count($grp_dec)) {
+                                    $nbrEligibility++;
                                     $ret = fn_eligibility($RetourGenInfosCdr, $config['cdrName']);
                                     if (count($ret)) {
-//                                        $fl = fopen($rep_log . $fileName, 'a');
-//                                        if ($fl) {
-//                                            fputs($fl, json_encode($ret) . " : ");
-//                                            fputs($fl, json_encode($RetourGenInfosCdr) . "\n\r");
-//                                            fclose($fl);
-//                                        }
-                                        fn_calcul_bonus($RetourGenInfosCdr, $ret);
+//                                        echo "\n\r" . $cdr['msisdn'] . "\n\rEligibility : " . json_encode($ret) . "\n\r";
+                                        $ret = fn_calcul_bonus($RetourGenInfosCdr, $ret);
+//                                        echo "Bonus calculés : " . json_encode($ret) . "\n\r";
                                     }
                                 }
                                 $nbrLigneCons++;
@@ -149,7 +149,7 @@ try {
                         $body .= "<li>La date $k n'est pas encore initialisée !</li>";
                         $altbody .= "\r\n - La date $k n'est pas encore initialisée !";
                     }
-                    $connection->query("update sys_cron set etat = false where type ='". $config['cdrName'] ."'");
+                    $connection->query("update sys_cron set etat = false where type ='" . $config['cdrName'] . "'");
                     require_once 'mail/envoyer_mail.php';
                     exit();
                 }
@@ -161,7 +161,7 @@ try {
                 $seq = (int) str_replace('.unl', '', $inf_file[5]);
 
 //                echo ", Nb.L: $nbrLigne, Nb.L.Cons: $nbrLigneCons";
-                echo ",Nb.L.Cons: $nbrLigneCons /   $nbrLigne";
+                echo ",Nb.L.Cons: $nbrLigneCons /   $nbrLigne / $nbrEligibility";
 
                 $af[] = "('$fileName', '" . date('YmdHis') . "', $nbrLigne, $nbrLigneCons, '" . $config['cdrName'] . "', '$dtFirst ', '$dtLast', '$dtJour', '$dtMois', $cbp, $seq)";
             }
@@ -176,9 +176,9 @@ try {
                     execute_requete($tbMSISDN, $allRq, $connection);
                     execute_all_bonus($arr_glb_bonus, $connection, $dtJour);
                     echo "\n\rFin traitement , process : '" . getmypid() . "' H:" . date('His');
-                    $reqFile = "INSERT INTO app_fichier_charge (fichier, dt_chargement, nbr_ligne, nbr_ligne_considere, type_fichier, dt_first, dt_last, dt_jour, dt_mois, cbp, seq)
+                    $reqGlobal = "INSERT INTO app_fichier_charge (fichier, dt_chargement, nbr_ligne, nbr_ligne_considere, type_fichier, dt_first, dt_last, dt_jour, dt_mois, cbp, seq)
                        VALUES " . implode(', ', $af);
-                    $connection->query($reqFile);
+                    $connection->query($reqGlobal);
                     if ($connection->query('COMMIT')) {
                         echo "\n\rArchivage des fichiers , process : '" . getmypid() . "' ";
                         foreach ($nbrFile as $fileName) {
@@ -206,14 +206,17 @@ try {
     }
     echo "\r\nFin parsing, process : '" . getmypid() . "'  " . date("Ymd H:i:s");
 } catch (Exception $e) {
+    echo "\n\rLast Rq : " . $reqGlobal;
     if ($config['nb_files'] == 1) {
         $nvEmpNom = $rep_file_error . $fileName;
         $fs = rename($fichier, $nvEmpNom);
+        echo "\r\n";
         echo($e->getMessage());
         echo "\r\n";
     } else {
-        $config['nbrFichierCharge'] = (int) $config['nbrFichierCharge'] / 2 ? (int) $config['nbrFichierCharge'] / 2 : 1;
-        $config['nb_files'] = (int) $config['nb_files'] / 2 ? (int) $config['nb_files'] / 2 : 1;
+        $cmp_lim = array();
+        $config['nbrFichierCharge'] = (int) ($config['nbrFichierCharge'] / 2) ? (int) ($config['nbrFichierCharge'] / 2) : 1;
+        $config['nb_files'] = (int) ($config['nb_files'] / 2) ? (int) ($config['nb_files'] / 2) : 1;
         echo "\r\nBasculement mode " . $config['nb_files'] . " fichier par lot";
         include '../import_generique.php';
     }

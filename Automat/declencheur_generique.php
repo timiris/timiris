@@ -1,5 +1,5 @@
 <?php
-
+$grp_dec = $bns_dec = $cmp_lim = array();
 $dateLimCmpTer = strtotime(date("YmdHis"));
 $dateLimCmpTer = date("YmdHis", strtotime("-1 days", $dateLimCmpTer));
 $localisation = false;
@@ -70,5 +70,23 @@ if ($res_dec->rowCount()) {
         while ($li_loc = $reqLoc->fetch(PDO::FETCH_OBJ))
             $arr_localisation[$li_loc->cellid] = $li_loc->fk_id_wilaya;
     }
+}
+
+$reqLim = 'select id, cmp_nbr_bonus, cmp_montant_bonus, cmp_nbr_bonus_jr, cmp_montant_bonus_jr, client_nbr_bonus, client_montant_bonus,
+                client_nbr_bonus_jr,client_montant_bonus_jr from app_campagne where etat = ' . CMP_ENCOURS;
+$resLim = $connection->query($reqLim);
+while ($li_lim = $resLim->fetch(PDO::FETCH_OBJ)) {
+    $cmp_lim[$li_lim->id] = array(
+        'cmp_nbr_bonus' => $li_lim->cmp_nbr_bonus,
+        'cmp_montant_bonus' => $li_lim->cmp_montant_bonus,
+        'cmp_nbr_bonus_jr' => $li_lim->cmp_nbr_bonus_jr,
+        'cmp_montant_bonus_jr' => $li_lim->cmp_montant_bonus_jr,
+        'cmp_total' => $li_lim->cmp_nbr_bonus + $li_lim->cmp_montant_bonus + $li_lim->cmp_nbr_bonus_jr + $li_lim->cmp_montant_bonus_jr,
+        'client_nbr_bonus' => $li_lim->client_nbr_bonus,
+        'client_montant_bonus' => $li_lim->client_montant_bonus,
+        'client_nbr_bonus_jr' => $li_lim->client_nbr_bonus_jr,
+        'client_montant_bonus_jr' => $li_lim->client_montant_bonus_jr,
+        'client_total' => $li_lim->client_nbr_bonus + $li_lim->client_montant_bonus + $li_lim->client_nbr_bonus_jr + $li_lim->client_montant_bonus_jr
+    );
 }
 ?>

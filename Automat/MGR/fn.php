@@ -1,7 +1,7 @@
 <?php
 
 function GenInfosCdr($licdr = array(), $config, $fileName) {
-    global $rep_log_ignored, $monServices;
+    global $rep_log_ignored, $monServices, $operationsIdExclus;
     if ($licdr['msisdn'] == "" || in_array($licdr['service'], $monServices) || in_array($licdr['OperationID'], $operationsIdExclus) || ($licdr['OperationID'] == "" && $licdr['cout'] == ""))
         return $licdr;
     $licdr['msisdn'] = verifierNumero($licdr['msisdn'], $config);

@@ -17,8 +17,8 @@ require_once 'connection.php';
 require_once $rep . "defs.php";
 require_once "mail/envoyer_mail.php";
 
-$config = $NewPos = $NewVal = $grp_dec = $bns_dec = $event_corsp = $cmp_lim = $arr_valorisation = $arrCible = $arrGT = array();
-$monServices = array('1257446764', '1457450091', '1857361948', '1857447070' , '148211097');
+$config = $NewPos = $NewVal = $event_corsp = $arr_valorisation = $arrCible = $arrGT = array();
+$monServices = array('1257446764', '1457450091', '1857361948', '1857447070', '148211097');
 
 $NewPos['compteur1'] = 105;
 $NewPos['cout1'] = 107;
@@ -87,6 +87,12 @@ $decNatureCdrName['clr'] = '99999';
 
 //***********************
 //***********************
+
+$reqList = 'select distinct code_cmpt, valorisation from ref_compteurs';
+$resList = $connection->query($reqList);
+while ($li_list = $resList->fetch(PDO::FETCH_OBJ))
+    $arr_valorisation[$li_list->code_cmpt] = $li_list->valorisation;
+
 //***********************
 
 function verifierNumero($numero, $config) {
@@ -120,7 +126,8 @@ function fn_gen_rq($tb, $msisdn, $arr) {
 
 function execute_req_table($tb, $arRq, $connection) {
     try {
-        global $arrCible, $arrGT;
+        global $arrCible, $arrGT, $reqGlobal;
+        $debug = 0;
         $tbAttrMSISDN = $arrCibTbl = $arrGtTbl = $arrCibTblVal = $arrGtTblVal = array();
         $nums = array_keys($arRq);
 
@@ -157,10 +164,18 @@ function execute_req_table($tb, $arRq, $connection) {
             }
         }
 
-        foreach ($arrCibTblVal as $idCmp => $val)
-            $connection->query('UPDATE app_campagne_kpi SET cible = cible + ' . $val . " WHERE tbname = '$tb' AND fk_id_campagne = $idCmp");
-        foreach ($arrGtTblVal as $idCmp => $val)
-            $connection->query('UPDATE app_campagne_kpi SET gc = gc + ' . $val . " WHERE tbname = '$tb' AND fk_id_campagne = $idCmp");
+        foreach ($arrCibTblVal as $idCmp => $val) {
+            $reqGlobal = 'UPDATE app_campagne_kpi SET cible = cible + ' . $val . " WHERE tbname = '$tb' AND fk_id_campagne = $idCmp";
+            if ($debug)
+                echo $reqGlobal . "\n\r";
+            $connection->query($reqGlobal);
+        }
+        foreach ($arrGtTblVal as $idCmp => $val) {
+            $reqGlobal = 'UPDATE app_campagne_kpi SET gc = gc + ' . $val . " WHERE tbname = '$tb' AND fk_id_campagne = $idCmp";
+            if ($debug)
+                echo $reqGlobal . "\n\r";
+            $connection->query($reqGlobal);
+        }
 
 
         $chaineMSISDN = "'" . implode("','", $nums) . "'";
@@ -175,9 +190,11 @@ function execute_req_table($tb, $arRq, $connection) {
         $tbNtMSISDN = array_diff($nums, $tbAttrMSISDN);
         if (count($tbNtMSISDN)) {
             foreach ($tbNtMSISDN as $num) {
-                $tReq = 'INSERT INTO ' . $tb . ' (numero, ' . implode(', ', array_keys($arRq[$num])) . ')
+                $reqGlobal = 'INSERT INTO ' . $tb . ' (numero, ' . implode(', ', array_keys($arRq[$num])) . ')
                             VALUES (\'' . $num . '\', ' . implode(', ', array_values($arRq[$num])) . ')';
-                $result = $connection->query($tReq);
+                if ($debug)
+                    echo $reqGlobal . "\n\r";
+                $result = $connection->query($reqGlobal);
             }
         }
 
@@ -186,9 +203,11 @@ function execute_req_table($tb, $arRq, $connection) {
             $ar = array();
             foreach ($arRq[$num] as $ch => $v)
                 $ar[] = "$ch = $ch + $v";
-            $reqUpdate = "UPDATE $tb SET " . implode(', ', $ar) . " WHERE numero = '$num'";
+            $reqGlobal = "UPDATE $tb SET " . implode(', ', $ar) . " WHERE numero = '$num'";
 //                echo "\r\n <br>" . $reqUpdate . ';';
-            $result = $connection->query($reqUpdate);
+            if ($debug)
+                echo $reqGlobal . "\n\r";
+            $result = $connection->query($reqGlobal);
         }
     } catch (Exception $e) {
         throw($e);
@@ -196,6 +215,7 @@ function execute_req_table($tb, $arRq, $connection) {
 }
 
 function execute_requete($tbMSISDN, $allRq, $connection) {
+    global $reqGlobal;
     try {
         if (count($tbMSISDN)) {
             $chaineMSISDN = "'" . implode("','", $tbMSISDN) . "'";
@@ -225,8 +245,10 @@ function execute_requete($tbMSISDN, $allRq, $connection) {
                     $new = array_diff($new, $newEx);
                     if (count($new)) {
                         $listNew = '(' . $idCG . ", '" . implode("'), ($idCG, '", $new) . "')";
-                        $connection->query('insert into app_campagne_cible (fk_id_campagne, numero) values ' . $listNew);
-                        $connection->query('update app_campagne set nbr_cible = nbr_cible +' . count($new) . ' where id = ' . $idCG);
+                        $reqGlobal = 'insert into app_campagne_cible (fk_id_campagne, numero) values ' . $listNew;
+                        $connection->query($reqGlobal);
+                        $reqGlobal = 'update app_campagne set nbr_cible = nbr_cible +' . count($new) . ' where id = ' . $idCG;
+                        $connection->query($reqGlobal);
                     }
                 }
             }
@@ -260,16 +282,11 @@ function execute_requete($tbMSISDN, $allRq, $connection) {
 function fn_eligibility(&$tbCDR, $cdrType) {
     try {
         $arr_gv = array();
-        $debug = false;
         $arr_tc = array('rec' => array(2 => 1, 3 => 2));
         $arr_tag = array('A1' => 3, 'A7' => 9);
         global $grp_dec, $arr_localisation, $arr_dt_cmp;
         if (isset($tbCDR['cellid'])) {
             $tbCDR['localisation'] = (isset($arr_localisation[$tbCDR['cellid']])) ? $arr_localisation[$tbCDR['cellid']] : 0;
-        }
-        if ($tbCDR['msisdn'] == '22233222255') {
-            $debug = true;
-            print_r($tbCDR);
         }
 
         foreach ($grp_dec as $cmp => $grps) {
@@ -277,8 +294,6 @@ function fn_eligibility(&$tbCDR, $cdrType) {
 //            echo '<br>non éligibe cond time';
                 continue;
             }
-            if ($debug)
-                echo "pos 44545 \n\r";
             foreach ($grps as $idGrp => $grp) {
                 $vg = true;
                 foreach ($grp as $id => $cr) {
@@ -286,24 +301,16 @@ function fn_eligibility(&$tbCDR, $cdrType) {
                         $vg = false;
                         continue;
                     }
-                    if ($debug)
-                        echo "pos 86885 \n\r";
                     if (isset($tbCDR['type_tr']) && $tbCDR['type_tr'] != $cr['fk_id_td_event']) {
                         if ($cr['fk_id_td_event'] != 26) {
-                            if ($debug)
-                                echo 'Quitter', $tbCDR['msisdn'], ':', $tbCDR['type_tr'], ':', $tbCDR['type_tr'], ':', $cr['fk_id_td_event'], "\n\r";
                             $vg = false;
                             continue;
                         }
                     }
-                    if ($debug)
-                        echo 'Pass ', $tbCDR['msisdn'], ':', $tbCDR['type_tr'], ':', $tbCDR['type_tr'], ':', $cr['fk_id_td_event'], "\n\r";
                     if (isset($arr_tag[$cdrType]) && $cr['nature_dec'] != $arr_tag[$cdrType]) {
                         $vg = false;
                         continue;
                     }
-                    if ($debug)
-                        echo "pos 93146 \n\r";
 
                     $cr['operateur'] = trim($cr['operateur']);
                     if ($cr['cdrField'] == 'compteur')
@@ -317,9 +324,6 @@ function fn_eligibility(&$tbCDR, $cdrType) {
                     }
                     else
                         $fieldValue = $tbCDR[$cr['cdrField']];
-                    if ($debug) {
-                        echo $fieldValue, ' : ', $cr['operateur'], ':', $cr['valeur'], "\n\r";
-                    }
                     switch ($cr['operateur']) {
                         case '=': if (!($fieldValue == $cr['valeur']))
                                 $vg = false;
@@ -382,16 +386,19 @@ function fn_eligibility(&$tbCDR, $cdrType) {
 }
 
 function fn_calcul_bonus($tbCDR, $arr_gv) {
+    $arr_ret = array();
     try {
         global $arr_glb_bonus, $bns_dec, $idx_bns, $arr_valorisation;
         $convertUnitBonus = array('consommation' => 100, 'cout' => 100, 'valeur' => 100, 'montant' => 100, 'duree' => 60, 'volume' => 1048576);
         foreach ($arr_gv as $cmp => $grps) {
             $idx_bns++;
+            $arr_ret[$cmp] = array();
             if (!isset($arr_glb_bonus[$cmp])) {
                 $arr_glb_bonus[$cmp] = $arr_glb_bonus[$cmp][$tbCDR['msisdn']] = array();
             } elseif (!isset($arr_glb_bonus[$cmp][$tbCDR['msisdn']]))
                 $arr_glb_bonus[$cmp][$tbCDR['msisdn']] = array();
             foreach ($grps as $idGrp => $grp) {
+                $arr_ret[$cmp][$idGrp] = array();
                 if (isset($bns_dec[$cmp][$idGrp])) {
                     $arr_glb_bonus[$cmp][$tbCDR['msisdn']][$idGrp . '|' . $idx_bns] = array();
                     foreach ($bns_dec[$cmp][$idGrp] as $idBns => $bns) {
@@ -400,6 +407,7 @@ function fn_calcul_bonus($tbCDR, $arr_gv) {
                             $valorisation = $bns['valeur'] * $arr_valorisation[$bns['code']];
                             $arr_glb_bonus[$cmp][$tbCDR['msisdn']][$idGrp . '|' . $idx_bns][] = array('idBns' => $idBns, 'nature' => $bns['nature'], 'code' => $bns['code'],
                                 'valeur' => $valeur, 'dt_action' => $tbCDR['heure'], 'valorisation' => $valorisation);
+                            $arr_ret[$cmp][$idGrp][] = array($bns['nature'], $valeur, $valorisation);
                         } else {  // bonus proportionnel
                             if (isset($tbCDR[$bns['ch_ref']]) && $tbCDR[$bns['ch_ref']]) {
                                 $valeur = (int) ($bns['valeur'] * $tbCDR[$bns['ch_ref']] / 100);
@@ -410,6 +418,7 @@ function fn_calcul_bonus($tbCDR, $arr_gv) {
                                         $valeur = (int) ($valeur / 100);
                                     $arr_glb_bonus[$cmp][$tbCDR['msisdn']][$idGrp . '|' . $idx_bns][] = array('idBns' => $idBns, 'nature' => $bns['nature'],
                                         'code' => $bns['code'], 'valeur' => $valeur, 'dt_action' => $tbCDR['heure'], 'valorisation' => $valorisation);
+                                    $arr_ret[$cmp][$idGrp][] = array($bns['nature'], $valeur, $valorisation);
                                 }
 //                            echo '<br> '.$tbCDR['msisdn'].' : valeur : '.$valeur.' : ch_ref '.$bns['ch_ref'].' = '.$tbCDR[$bns['ch_ref']].', conv : '.$convertUnitBonus[$bns['ch_ref']];
                             }
@@ -431,6 +440,7 @@ function fn_calcul_bonus($tbCDR, $arr_gv) {
                 }
             }
         }
+        return $arr_ret;
     } catch (Exception $e) {
         throw ($e);
     }
@@ -611,27 +621,4 @@ function fn_stopCampagne($idCmp, $cause, $connection) {
 }
 
 //***************************************************************************
-
-$reqLim = 'select id, cmp_nbr_bonus, cmp_montant_bonus, cmp_nbr_bonus_jr, cmp_montant_bonus_jr, client_nbr_bonus, client_montant_bonus,
-                client_nbr_bonus_jr,client_montant_bonus_jr from app_campagne where etat = ' . CMP_ENCOURS;
-$resLim = $connection->query($reqLim);
-while ($li_lim = $resLim->fetch(PDO::FETCH_OBJ)) {
-    $cmp_lim[$li_lim->id] = array(
-        'cmp_nbr_bonus' => $li_lim->cmp_nbr_bonus,
-        'cmp_montant_bonus' => $li_lim->cmp_montant_bonus,
-        'cmp_nbr_bonus_jr' => $li_lim->cmp_nbr_bonus_jr,
-        'cmp_montant_bonus_jr' => $li_lim->cmp_montant_bonus_jr,
-        'cmp_total' => $li_lim->cmp_nbr_bonus + $li_lim->cmp_montant_bonus + $li_lim->cmp_nbr_bonus_jr + $li_lim->cmp_montant_bonus_jr,
-        'client_nbr_bonus' => $li_lim->client_nbr_bonus,
-        'client_montant_bonus' => $li_lim->client_montant_bonus,
-        'client_nbr_bonus_jr' => $li_lim->client_nbr_bonus_jr,
-        'client_montant_bonus_jr' => $li_lim->client_montant_bonus_jr,
-        'client_total' => $li_lim->client_nbr_bonus + $li_lim->client_montant_bonus + $li_lim->client_nbr_bonus_jr + $li_lim->client_montant_bonus_jr
-    );
-}
-
-$reqList = 'select distinct code_cmpt, valorisation from ref_compteurs';
-$resList = $connection->query($reqList);
-while ($li_list = $resList->fetch(PDO::FETCH_OBJ))
-    $arr_valorisation[$li_list->code_cmpt] = $li_list->valorisation;
 ?>
