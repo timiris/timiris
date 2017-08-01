@@ -1,7 +1,7 @@
 <?php
 define('INDICATIF', '222');
 define('PQ_OPERATOR', '2223');
-define('PQ_NAT', array('2224', '2222'));
+//define('PQ_NAT', array('2224', '2222'));
 define('LNF_NAT',8);
 define('LNF_INT',11);
 

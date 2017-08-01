@@ -12,7 +12,7 @@ function alertDialog(message, cls) {
         height: "250",
         draggable: false,
         buttons: {
-            Ok: function() {
+            Ok: function () {
                 $("#dialog-message").html("");
                 $(this).dialog("close");
             }
@@ -23,7 +23,7 @@ var idGroup = 0, retour_enr_cmp = '';
 var parms_gle = new Object();
 
 var tm_out_rec, tm_out_mgr, tm_out_vou, tm_out_sms, tm_out_data, tm_out_ftp;
-$(document).ready(function() {
+$(document).ready(function () {
     lgSMS = "Fr";
     $("#username").focus();
 //===========================================================================================================================================================================
@@ -32,7 +32,7 @@ $(document).ready(function() {
 //===========================================================================================================================================================================
 //===========================================================================================================================================================================
 
-    $(document.body).on("focus", '.datetimepicker', function() {
+    $(document.body).on("focus", '.datetimepicker', function () {
         $(this).datetimepicker({
             dateFormat: "yy-mm-dd",
             minDate: 0,
@@ -50,7 +50,7 @@ $(document).ready(function() {
             dayNamesMin: ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"]
         })
     });
-    $(document.body).on("focus", '.datepicker', function() {
+    $(document.body).on("focus", '.datepicker', function () {
         $(this).datepicker({dateFormat: "yy-mm-dd",
             autoSize: true,
             defaultDate: 0,
@@ -75,13 +75,13 @@ $(document).ready(function() {
 //===========================================================================================================================================================================
 //===========================================================================================================================================================================
 
-    $(document.body).on("change keypress", '.champVide', function(event) {
+    $(document.body).on("change keypress", '.champVide', function (event) {
         $(this).removeClass("champVide");
         var id = $(this).attr("id");
         if ($("#span" + id).length)
             $("#span" + id).remove();
     });
-    $(document.body).on("keypress", '.chiffre', function(event) {
+    $(document.body).on("keypress", '.chiffre', function (event) {
 // Compatibilité IE / Firefox
         if (!event && window.event) {
             event = window.event;
@@ -100,7 +100,7 @@ $(document).ready(function() {
     });
 
     //$('.chiffrePoint').live('keypress', function(event){
-    $(document.body).on("keypress", '.chiffrePoint', function(event) {
+    $(document.body).on("keypress", '.chiffrePoint', function (event) {
         // Compatibilité IE / Firefox
         if (!event && window.event) {
             event = window.event;
@@ -125,7 +125,7 @@ $(document).ready(function() {
 //==================================================================       CHARGEMENT DES TYPES DONNEES      ================================================================
 //===========================================================================================================================================================================
 //===========================================================================================================================================================================
-    $(document.body).on("change", '#nature_kpi', function() {
+    $(document.body).on("change", '#nature_kpi', function () {
         var idNature = $(this).val();
         $('#nature_kpi option[value=""]').remove();
         $.ajax({
@@ -133,18 +133,18 @@ $(document).ready(function() {
             async: false,
             type: 'POST',
             data: {idNature: idNature},
-            success: function(retour) {
+            success: function (retour) {
                 $("#type_kpi").html(retour);
                 $("#unite_kpi").html('');
             },
-            error: function() {
+            error: function () {
 
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         })
     });
 
-    $(document.body).on("change", '#type_kpi', function() {
+    $(document.body).on("change", '#type_kpi', function () {
         var idTd = $(this).val();
         $('#type_kpi option[value=""]').remove();
         $.ajax({
@@ -152,10 +152,10 @@ $(document).ready(function() {
             async: false,
             type: 'POST',
             data: {idTd: idTd},
-            success: function(retour) {
+            success: function (retour) {
                 $("#unite_kpi").html(retour);
             },
-            error: function() {
+            error: function () {
 
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
@@ -164,7 +164,7 @@ $(document).ready(function() {
 
 
 
-    $(document.body).on("click", '#idAffichageKPI', function() {
+    $(document.body).on("click", '#idAffichageKPI', function () {
         var idCmp = $('#idCmpHidden').val(), idTd = $('#type_kpi').val(), unite = $('#unite_kpi').val(), send = true;
         if (idCmp == '') {
             send = false;
@@ -183,26 +183,26 @@ $(document).ready(function() {
                 async: false,
                 type: 'POST',
                 data: {idCmp: idCmp, idTd: idTd, unite: unite},
-                success: function(retour) {
+                success: function (retour) {
                     $("#divStatsGlobal").html(retour);
                 },
-                error: function() {
+                error: function () {
 
                     alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 }
             })
     });
 
-    $(document.body).on("change", '#nature_stats_client', function() {
+    $(document.body).on("change", '#nature_stats_client', function () {
         var valeur = $(this).val(), options = '', first = '', first2 = '';
-        $.each(jsn_type[valeur], function(index, value) {
+        $.each(jsn_type[valeur], function (index, value) {
             if (first == '')
                 first = value;
             options += "<option value = '" + value + "'>" + index + "</option>";
         });
         $("#type_donnee_stats_client").html(options);
         options = '';
-        $.each(jsn_compteur[first], function(index, value) {
+        $.each(jsn_compteur[first], function (index, value) {
             if (value == 'Total' || value == 'Consommation_total' || value == 'Data_attribut_profil_all' || value.substring(0, 3) == 'All')
                 options += "<option value = '" + value + "' selected>" + index + "</option>";
             else
@@ -212,15 +212,15 @@ $(document).ready(function() {
         $('#compteurs_stats_client').multipleSelect();
         options = '';
         var sel;
-        $.each(jsn_unite[first], function(index, value) {
+        $.each(jsn_unite[first], function (index, value) {
             sel = (index == 60 || index == 100 || index == 1048576) ? ' selected ' : '';
             options += "<option value = '" + index + "' " + sel + ">" + value + "</option>";
         });
         $("#unite_stats_client").html(options);
     });
-    $(document.body).on("change", '#type_donnee_stats_client', function() {
+    $(document.body).on("change", '#type_donnee_stats_client', function () {
         var valeur = $(this).val(), options = '', first = '';
-        $.each(jsn_compteur[valeur], function(index, value) {
+        $.each(jsn_compteur[valeur], function (index, value) {
             if (first == '')
                 first = value;
             if (value == 'Total' || value == 'Consommation_total' || value == 'Data_attribut_profil_all' || value.substring(0, 3) == 'All')
@@ -232,14 +232,14 @@ $(document).ready(function() {
         $('#compteurs_stats_client').multipleSelect();
         options = '';
         var sel;
-        $.each(jsn_unite[valeur], function(index, value) {
+        $.each(jsn_unite[valeur], function (index, value) {
             sel = (index == 60 || index == 100 || index == 1048576) ? ' selected ' : '';
             options += "<option value = '" + index + "' " + sel + ">" + value + "</option>";
         });
         $("#unite_stats_client").html(options);
     });
 
-    $(document.body).on("change", '.selectNatureTrafic', function() {
+    $(document.body).on("change", '.selectNatureTrafic', function () {
         var url = $(this).hasClass('event') ? "campagne/declencheur/type_donnees.php" : "ciblage/type_donnees.php";
         var valeur = $(this).val(), id = $(this).attr("id").replace("idSelectNatureTrafic", "idSelectTypeDonnee");
         charger_liste(id, valeur, url);
@@ -251,10 +251,10 @@ $(document).ready(function() {
             async: false,
             type: 'POST',
             data: {id_nature: valeur},
-            success: function(retour) {
+            success: function (retour) {
                 $("#" + id).html(retour);
             },
-            error: function() {
+            error: function () {
 
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
@@ -267,12 +267,12 @@ $(document).ready(function() {
 //==================================================================       GESTION MENU     =================================================================================
 //===========================================================================================================================================================================
 //===========================================================================================================================================================================
-    $(document.body).on("click", '#idModPWD', function() {
+    $(document.body).on("click", '#idModPWD', function () {
         $("#divPrincipale").html("<br><br><br><center><img src = 'img/loading.gif'></center>");
         $("#divPrincipale").load("admin/user/modif_pwd.php");
         return false;
     });
-    $(document.body).on("click", '.menuVertical', function() {
+    $(document.body).on("click", '.menuVertical', function () {
         clearInterval(tm_out_rec);
         clearInterval(tm_out_vou);
         clearInterval(tm_out_sms);
@@ -297,14 +297,14 @@ $(document).ready(function() {
             }
         }
         $(".menuVertical").each(
-                function() {
+                function () {
                     $(this).removeClass("active");
                 });
         menuAct.addClass("active");
         return false;
     });
 
-    $(document.body).on("click", '.menu_racc', function() {
+    $(document.body).on("click", '.menu_racc', function () {
         clearInterval(tm_out_rec);
         clearInterval(tm_out_vou);
         clearInterval(tm_out_sms);
@@ -318,7 +318,7 @@ $(document).ready(function() {
     });
 
 
-    $(document.body).on("click", '.menu_admin', function() {
+    $(document.body).on("click", '.menu_admin', function () {
         clearInterval(tm_out_rec);
         clearInterval(tm_out_vou);
         clearInterval(tm_out_sms);
@@ -333,7 +333,7 @@ $(document).ready(function() {
     });
 
 
-    $(document.body).on("click", '.actionUser', function() {
+    $(document.body).on("click", '.actionUser', function () {
         var Elt = $(this);
         if (Elt.hasClass('edit')) {
             idUser = Elt.attr('name').replace('editer', '');
@@ -346,7 +346,7 @@ $(document).ready(function() {
                 type: 'POST',
                 dateType: 'json',
                 data: {user: idUser},
-                success: function(retour) {
+                success: function (retour) {
                     ret = JSON.parse(retour);
                     alertDialog(ret.message, 'success');
                 }
@@ -360,7 +360,7 @@ $(document).ready(function() {
                 type: 'POST',
                 dateType: 'json',
                 data: {user: idUser},
-                success: function(retour) {
+                success: function (retour) {
                     ret = JSON.parse(retour);
                     if (ret.exec == '1') {
                         Elt.attr('src', 'img/' + ret.src + '.png');
@@ -372,8 +372,8 @@ $(document).ready(function() {
         return false;
     });
 
-    $(document.body).on("click", '.aff_det_cmp_client', function() {
-        $('.msq_det_cmp_client').each(function() {
+    $(document.body).on("click", '.aff_det_cmp_client', function () {
+        $('.msq_det_cmp_client').each(function () {
             var Elt = $(this), idCmp = $(this).attr('name').replace('cmp', '');
             $('#ligne_det_' + idCmp).remove();
             Elt.removeClass('msq_det_cmp_client').addClass('aff_det_cmp_client').val('Afficher');
@@ -386,20 +386,20 @@ $(document).ready(function() {
             type: 'POST',
             dateType: 'json',
             data: {numero: numero, idCmp: idCmp},
-            success: function(retour) {
+            success: function (retour) {
                 $('#td_det_' + idCmp).html(retour);
                 Elt.removeClass('aff_det_cmp_client').addClass('msq_det_cmp_client').val('Masquer');
             }
         });
     });
 
-    $(document.body).on("click", '.msq_det_cmp_client', function() {
+    $(document.body).on("click", '.msq_det_cmp_client', function () {
         var Elt = $(this), idCmp = $(this).attr('name').replace('cmp', '');
         $('#ligne_det_' + idCmp).remove();
         Elt.removeClass('msq_det_cmp_client').addClass('aff_det_cmp_client').val('Afficher');
     });
 
-    $(document.body).on("click", '.actionCron', function() {
+    $(document.body).on("click", '.actionCron', function () {
         var Elt = $(this);
         type = Elt.attr('name');
 //        inpt = $('input:radio:checked').attr('id');
@@ -412,18 +412,18 @@ $(document).ready(function() {
             draggable: false,
             width: "400",
             height: "250",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $.ajax({
                             url: "admin/plateforme/cron/gestionCron.php",
                             async: false,
                             type: 'POST',
                             dateType: 'json',
                             data: {type: type},
-                            success: function(retour) {
+                            success: function (retour) {
                                 ret = JSON.parse(retour);
                                 if (ret.exec == '1') {
                                     $('#menu_21').click();
@@ -434,7 +434,7 @@ $(document).ready(function() {
                         });
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -443,7 +443,7 @@ $(document).ready(function() {
 
         return false;
     });
-    $(document.body).on("dblclick", '.spanEdit', function() {
+    $(document.body).on("dblclick", '.spanEdit', function () {
         var Elt = $(this), txt = Elt.text(), id = Elt.attr('name'), valeur = $('span[name=valeur_' + id + ']').text();
         $("#dialog-message").html("<br>Libellé :<input type = 'text' value ='" + txt + "' width=40 id='libelle_" + id + "'/><br><br>\
             Valorisation : <input type = 'text' value ='" + valeur + "' size= '5' class='chiffrePoint' id='NewVal_" + id + "'/> UM");
@@ -453,11 +453,11 @@ $(document).ready(function() {
             draggable: false,
             width: "400",
             height: "300",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Enregistrer", click: function() {
+            buttons: [{text: "Enregistrer", click: function () {
                         var newName = $('#libelle_' + id).val();
                         var newVal = $('#NewVal_' + id).val();
                         $.ajax({
@@ -466,7 +466,7 @@ $(document).ready(function() {
                             type: 'POST',
                             dateType: 'json',
                             data: {name: newName, valeur: newVal, idCmpt: id},
-                            success: function(retour) {
+                            success: function (retour) {
                                 ret = JSON.parse(retour);
                                 if (ret.exec == '1') {
                                     Elt.text(newName);
@@ -478,7 +478,7 @@ $(document).ready(function() {
                         });
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -487,7 +487,7 @@ $(document).ready(function() {
 
     })
 
-    $(document.body).on('change', '#idBroadCastCmp', function() {
+    $(document.body).on('change', '#idBroadCastCmp', function () {
         var valSel = $(this).val();
         if (valSel == 0) {
             $(".teasing").hide();
@@ -508,14 +508,14 @@ $(document).ready(function() {
         }
     });
 
-    $(document.body).on("click", '.tag', function() {
+    $(document.body).on("click", '.tag', function () {
         $("#idSmsCampagne" + lgSMS).insertAtCaret($(this).attr('name'));
     });
-    $(document.body).on("click", '.tagBns', function() {
+    $(document.body).on("click", '.tagBns', function () {
         var id = $(this).parent().attr('id').replace('tags_', '');
         $("#idSMSBonus" + lgSMS + id).insertAtCaret($(this).attr('name'));
     });
-    $(document.body).on("focusout", '.smsComms', function() {
+    $(document.body).on("focusout", '.smsComms', function () {
         lgSMS = $(this).attr('id').replace('idSmsCampagne', '').replace('idSMSBonus', '').substring(0, 2);
         var Elt = $(this);
         Elt.attr('cols', 40);
@@ -524,7 +524,7 @@ $(document).ready(function() {
             $('span[name=' + spanName + ']').hide();
         }
     });
-    $(document.body).on("focus", '.smsComms', function() {
+    $(document.body).on("focus", '.smsComms', function () {
         var Elt = $(this);
         Elt.attr('cols', 70);
         if (Elt.attr('name') != '') {
@@ -532,7 +532,7 @@ $(document).ready(function() {
             $('span[name=' + spanName + ']').show();
         }
     });
-    $(document.body).on("keyup", '.smsComms', function() {
+    $(document.body).on("keyup", '.smsComms', function () {
         var Elt = $(this);
         if (Elt.attr('name') != '') {
             spanName = Elt.attr('name') + 'Span';
@@ -548,7 +548,7 @@ $(document).ready(function() {
         }
     });
 
-    $(document.body).on("click", '.actionCmpt', function() {
+    $(document.body).on("click", '.actionCmpt', function () {
         var Elt = $(this), changes = new Object(), conf = new Object(), src = Elt.attr('src'), title = Elt.attr('title');
         var stat = ($(this).hasClass('stat')) ? 0 : 1, id = Elt.attr('name');
         changes['img/on1.png'] = 'img/off1.png';
@@ -564,18 +564,18 @@ $(document).ready(function() {
             draggable: false,
             width: "400",
             height: "220",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $.ajax({
                             url: "admin/plateforme/compteurs/gestionCmpt.php",
                             async: false,
                             type: 'POST',
                             dateType: 'json',
                             data: {idCmpt: id, stat: stat, action: title},
-                            success: function(retour) {
+                            success: function (retour) {
                                 ret = JSON.parse(retour);
                                 if (ret.exec == '1') {
                                     Elt.attr('src', changes[src]);
@@ -587,7 +587,7 @@ $(document).ready(function() {
                         });
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -600,9 +600,9 @@ $(document).ready(function() {
     });
 
 
-    $(document.body).on("click", '#idEnregistrerWF', function() {
+    $(document.body).on("click", '#idEnregistrerWF', function () {
         var parms = new Object();
-        $('.wfv').each(function() {
+        $('.wfv').each(function () {
             parms[$(this).attr('name')] = $(this).val();
         });
         $.ajax({
@@ -611,7 +611,7 @@ $(document).ready(function() {
             type: 'POST',
             dateType: 'json',
             data: {wf: JSON.stringify(parms)},
-            success: function(retour) {
+            success: function (retour) {
                 ret = JSON.parse(retour);
                 if (ret.exec == '1') {
                     alertDialog('Mise a jour faite avec succès', 'success');
@@ -620,28 +620,27 @@ $(document).ready(function() {
         });
     });
 
-    $(document.body).on("click", '.addValidator', function() {
+    $(document.body).on("click", '.addValidator', function () {
         var sel = $('#idTableAddWF tr:last select').val(), html = $('#idTableAddWF tr:last select').html();
         if ($('#idTableAddWF tr:last select > option').length > 1) {
             tr = $('#idTableAddWF tr').length - 1;
             $('#idTableAddWF').append('<tr><th align="right">Validateur N° ' + tr + '</th><td colspan=2><select name="' + tr + '" class="wfv">' + html + '</select></td></tr>');
             $('#idTableAddWF tr:last option[value=' + sel + ']').remove();
             $('#idTableAddWF tr:last select').width('204px');
-        }
-        else
+        } else
             alertDialog('Impossible', 'error');
     });
 
-    $(document.body).on("change", '.wfv', function() {
+    $(document.body).on("change", '.wfv', function () {
         var pos = $(this).attr('name') * 1;
-        $('.wfv').each(function() {
+        $('.wfv').each(function () {
             if ($(this).attr('name') * 1 > pos)
                 $(this).parent().parent().remove();
         });
 
     });
 
-    $(document.body).on("click", '.actionProfil', function() {
+    $(document.body).on("click", '.actionProfil', function () {
         var Elt = $(this);
         if (Elt.hasClass('edit')) {
             idProfil = Elt.attr('name').replace('editer', '');
@@ -662,7 +661,7 @@ $(document).ready(function() {
                 type: 'POST',
                 dateType: 'json',
                 data: {profil: idProfil},
-                success: function(retour) {
+                success: function (retour) {
                     ret = JSON.parse(retour);
                     if (ret.exec == '1') {
                         Elt.attr('src', 'img/' + ret.src + '.png');
@@ -673,7 +672,7 @@ $(document).ready(function() {
         }
         return false;
     });
-    $(document.body).on("click", '#idEnregistrerProfil', function() {
+    $(document.body).on("click", '#idEnregistrerProfil', function () {
         var profil = new Object(), valid = true, Elt = $(this);
         if ($("#name_profil").val().trim() == '') {
             $("#name_profil").addClass('champVide').after("<span id='spanname_profil'> Champ obligatoire</span>");
@@ -682,7 +681,7 @@ $(document).ready(function() {
             profil['name_profil'] = $("#name_profil").val().trim();
         if (valid)
             $(".nv_profil").each(
-                    function() {
+                    function () {
                         id = $(this).attr("id");
                         profil[id] = $(this).attr('src').replace('1.png', '').replace('img/', '');
                     });
@@ -694,24 +693,23 @@ $(document).ready(function() {
                 type: 'POST',
                 dateType: 'json',
                 data: {profil: JSON.stringify(profil)},
-                success: function(retour) {
+                success: function (retour) {
                     ret = JSON.parse(retour);
                     if (ret.exec == '1') {
                         $("#spanRetour").html(ret.message).removeAttr('class').addClass('alert-box success');
                         Elt.remove();
-                    }
-                    else
+                    } else
                         $("#spanRetour").html(ret.message).removeAttr('class').addClass('alert-box error');
                 },
-                error: function() {
+                error: function () {
                     alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 }
             });
     });
-    $(document.body).on("click", '#enregistrer_nouvel_user', function() {
+    $(document.body).on("click", '#enregistrer_nouvel_user', function () {
         var user = new Object(), valid = true, Elt = $(this);
         $(".nv_user").each(
-                function() {
+                function () {
                     id = $(this).attr("id");
                     user[id] = $(this).val();
                     if ($("#span" + id).length)
@@ -729,34 +727,33 @@ $(document).ready(function() {
                 type: 'POST',
                 dateType: 'json',
                 data: {user: JSON.stringify(user)},
-                success: function(retour) {
+                success: function (retour) {
                     ret = jQuery.parseJSON(retour);
                     if (typeof ret == 'object') {
                         if (ret.exec == '1') {
                             $("#spanRetour").html(ret.message).removeAttr('class').addClass('alert-box success');
                             Elt.remove();
-                            $(".nv_user").each(function() {
+                            $(".nv_user").each(function () {
                                 $(this).attr('disabled', true);
                             });
-                        }
-                        else
+                        } else
                             $("#spanRetour").html(ret.message).removeAttr('class').addClass('alert-box error');
                     } else
                         alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 },
-                error: function() {
+                error: function () {
                     alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 }
             });
     });
-    $(document.body).on("change", '.cls_fl', function() {
+    $(document.body).on("change", '.cls_fl', function () {
         var elt = $(this), filename = $(this).val();
         id = $(this).attr('name');
         if (filename) {
             var file = event.target.files[0];
             var reader = new FileReader();
             reader.readAsText(file);
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 var num, vn = 0, ivn = 0, data;
                 var csvData = event.target.result.replace(/\r/g, "");
                 data = csvData.split("\n");
@@ -792,16 +789,15 @@ $(document).ready(function() {
                     alertDialog('Fichier vide', 'error');
                 }
             }
-        }
-        else
+        } else
             $('#' + id).html(filename).removeClass('notice');
     });
 
 
-    $(document.body).on("click", '#idEnrModPWD', function() {
+    $(document.body).on("click", '#idEnrModPWD', function () {
         var user = new Object(), valid = true, Elt = $(this);
         $(".mod_pwd").each(
-                function() {
+                function () {
                     id = $(this).attr('id');
                     if ($("#span" + id).length)
                         $("#span" + id).remove();
@@ -822,25 +818,24 @@ $(document).ready(function() {
                 type: 'POST',
                 dateType: 'json',
                 data: {user: JSON.stringify(user)},
-                success: function(retour) {
+                success: function (retour) {
 //                    ret = JSON.parse(retour);
                     ret = jQuery.parseJSON(retour);
                     if (typeof ret == 'object') {
                         if (ret.exec == '1') {
                             $("#spanRetour").html(ret.message).removeAttr('class').addClass('alert-box success');
                             Elt.remove();
-                        }
-                        else
+                        } else
                             $("#spanRetour").html(ret.message).removeAttr('class').addClass('alert-box error');
                     } else
                         alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 },
-                error: function() {
+                error: function () {
                     alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 }
             });
     });
-    $(document.body).on("change", '.unite_periodique', function() {
+    $(document.body).on("change", '.unite_periodique', function () {
         var valeur = $(this).val(), id = $(this).attr("id").replace("idUnitePeriodique", "");
         // alertDialog(id);
         $.ajax({
@@ -848,7 +843,7 @@ $(document).ready(function() {
             async: false,
             type: 'POST',
             data: {idUnite: valeur},
-            success: function(retour) {
+            success: function (retour) {
                 var donnees = retour.split("|");
                 // $("#idPeriodeFrom"+id).replaceWith('<SELECT id="idPeriodeFrom'+id+'" class = "critere"></select>');
                 // $("#idPeriodeTo"+id).replaceWith('<SELECT id="idPeriodeTo'+id+'" class = "critere"></select>');
@@ -866,12 +861,12 @@ $(document).ready(function() {
                 if (valeur == 'a')
                     $("#idLibellePeriode" + id).text("  (4 Ans)");
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
     });
-    $(document.body).on("click", '.ajouterCritere', function() {
+    $(document.body).on("click", '.ajouterCritere', function () {
         var Elt = $(this), idG = $(this).attr("id").replace("AjouterCritere", ""), idC = getIdCritere();
         var nat_tr = $("#idSelectNatureTrafic" + idG).val(), tp_dn = $("#idSelectTypeDonnee" + idG).val();
         var nat_tr_txt = $("#idSelectNatureTrafic" + idG + " :selected").text(), tp_dn_txt = $("#idSelectTypeDonnee" + idG + " :selected").text();
@@ -888,12 +883,12 @@ $(document).ready(function() {
             async: false,
             type: 'POST',
             data: {idGroup: idG, idCritere: idC, nat_tr: nat_tr, tp_dn: tp_dn, nat_tr_txt: nat_tr_txt, tp_dn_txt: tp_dn_txt, evnt: evnt},
-            success: function(retour) {
+            success: function (retour) {
                 $("#critereContent" + idG).append(retour);
                 if (Elt.hasClass('declencheur'))
                     $("#idSelectNatureTrafic" + idG + ' option:not(:selected)').remove();
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
@@ -901,7 +896,7 @@ $(document).ready(function() {
 
     function getIdBonus() {
         var idB = 0;
-        $(".divCntBonus").each(function() {
+        $(".divCntBonus").each(function () {
             id = $(this).attr("id").replace('divCntBonus', '');
             if (id > idB)
                 idB = parseInt(id);
@@ -909,24 +904,24 @@ $(document).ready(function() {
         return idB + 1;
     }
 
-    $(document.body).on("click", '.ajouterDIV', function() {
+    $(document.body).on("click", '.ajouterDIV', function () {
         var idDiv = $(this).attr("name").replace('ajouterDiv', ''), idB = getIdBonus(), td = $("#type_declencheur").val();
         $.ajax({
             url: 'campagne/bonus/bonus.php',
             async: false,
             type: 'POST',
             data: {idBonus: idB, type_d: td, idDivCont: idDiv},
-            success: function(retour) {
+            success: function (retour) {
                 $("#divGroupeBonus" + idDiv).append(retour);
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
     });
 
 
-    $(document.body).on("change", '.selectNatureBonus', function() {
+    $(document.body).on("change", '.selectNatureBonus', function () {
         var idSel = $(this).attr('id').replace('idSelectNatureBonus', ''), natBonus = $(this).val(),
                 typeBonus = $('#idTypeBonus' + idSel).val(), id = ($(this).parents('.divBonus').attr('id').replace('Bonus', '')),
                 idNatureTrafic = $('#idSelectNatureTrafic' + id).val(),
@@ -937,7 +932,7 @@ $(document).ready(function() {
             async: false,
             type: 'POST',
             data: {natBonus: natBonus, typeBonus: typeBonus, idNatureTrafic: idNatureTrafic, typeDec: typeDec},
-            success: function(retour) {
+            success: function (retour) {
                 ret = JSON.parse(retour);
                 if (ret.exec == '1') {
                     $("#idSelectCompteur" + idSel).html(ret.cmp);
@@ -949,27 +944,26 @@ $(document).ready(function() {
                 } else
                     alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
     });
 
-    $(document.body).on("change", '.selectTypeBonus', function() {
+    $(document.body).on("change", '.selectTypeBonus', function () {
         var idSel = $(this).attr('id').replace('idTypeBonus', ''), typeBonus = $(this).val(),
                 id = ($(this).parents('.divBonus').attr('id').replace('Bonus', '')), idNatureTrafic = $('#idSelectNatureTrafic' + id).val();
         if (!idNatureTrafic) {
             $("#idTypeBonus" + idSel + " option:selected").prop("selected", false);
             $("#idTypeBonus" + idSel).attr('selectedIndex', '0');
             alertDialog("Merci de sélectionner un type de donnée", "error");
-        }
-        else
+        } else
             $.ajax({
                 url: 'campagne/bonus/nature_bonus.php',
                 async: false,
                 type: 'POST',
                 data: {typeBonus: typeBonus, idNatureTrafic: idNatureTrafic},
-                success: function(retour) {
+                success: function (retour) {
                     ret = JSON.parse(retour);
                     if (ret.exec == '1') {
                         $("#idSelectNatureBonus" + idSel).html(ret.nature);
@@ -978,13 +972,13 @@ $(document).ready(function() {
                     } else
                         alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 },
-                error: function() {
+                error: function () {
                     alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                 }
             });
     });
 
-    $(document.body).on("click", '.SupBonus', function() {
+    $(document.body).on("click", '.SupBonus', function () {
         var id = $(this).attr("name").replace('Bonus', '');
         $("#dialog-message").html("<center class= 'alert-box warning'>Voulez vous supprimer ce Bonus ? </center>");
         $("#dialog-message").dialog({
@@ -993,16 +987,16 @@ $(document).ready(function() {
             draggable: false,
             width: "400",
             height: "250",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $("#divCntBonus" + id).remove();
                         $(this).dialog("close");
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -1010,7 +1004,7 @@ $(document).ready(function() {
         });
     });
 
-    $(document.body).on("click", '.SupprimerDIV', function() {
+    $(document.body).on("click", '.SupprimerDIV', function () {
         var name = $(this).attr("name");
         $("#dialog-message").html("<center class= 'alert-box warning'>Voulez vous supprimer cet élément ? </center>");
         $("#dialog-message").dialog({
@@ -1019,23 +1013,23 @@ $(document).ready(function() {
             draggable: false,
             width: "400",
             height: "250",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $("#" + name).remove();
                         $(this).dialog("close");
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $(this).dialog("close");
                     }
                 }
             ]
         });
     });
-    $(document.body).on("click", '.AjouterGroupe', function() {
+    $(document.body).on("click", '.AjouterGroupe', function () {
         var Elt = $(this), idG = getIdGroup();
 //        idCnt = Elt.hasClass('declencheur') ? 'cntGrEvent' : 'cntGrCiblage';
         hEvent = Elt.hasClass('event') ? 1 : 0;
@@ -1052,10 +1046,10 @@ $(document).ready(function() {
             async: false,
             type: 'POST',
             data: {idGroup: idG, hEvent: hEvent},
-            success: function(retour) {
+            success: function (retour) {
                 $("#" + idCnt).append(retour);
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
@@ -1069,11 +1063,11 @@ $(document).ready(function() {
             draggable: true,
             width: "1000",
             height: "650",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Annuler')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Enregistrer", click: function() {
+            buttons: [{text: "Enregistrer", click: function () {
                         if (verifOngletGle()) {
                             parms_gle = new Object();
                             params_gle();
@@ -1094,19 +1088,18 @@ $(document).ready(function() {
                                 contentType: false,
                                 cache: false,
                                 timeout: 600000,
-                                success: function(data) {
+                                success: function (data) {
                                     $("#popup").dialog("close");
 //                        var ret = JSON.parse(data);
                                     if (data.exec == "1") {
                                         alertDialog(data.message, 'success');
                                         $('input[name="cmp' + idCmp + '"]').click();
                                         showDetaillCmp(idCmp);
-                                    }
-                                    else {
+                                    } else {
                                         alertDialog(data.message);
                                     }
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     alertDialog(data);
                                 }
                             });
@@ -1116,7 +1109,7 @@ $(document).ready(function() {
                             console.log('Erreur');
                     }
                 },
-                {text: "Annuler", click: function() {
+                {text: "Annuler", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -1132,46 +1125,58 @@ $(document).ready(function() {
             draggable: true,
             width: "1200",
             height: "550",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Annuler')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Enregistrer", click: function() {
+            buttons: [{text: "Enregistrer", click: function () {
                         parms = new Object();
-                        parms['dmd'] = 'budget';
+                        send = true;
+                        parms['dmd'] = 'ciblage';
                         parms['idCmp'] = idCmp;
-                        $(".budget").each(function() {
-                            parms[$(this).attr('name')] = $(this).val();
-                        })
-                        $.ajax({
-                            type: "POST",
-                            async: false,
-                            dataType: 'json',
-                            url: "campagne/modif_save.php",
-                            data: {cmp: JSON.stringify(parms)},
-                            success: function(data) {
-                                $("#popup").dialog("close");
-//                        var ret = JSON.parse(data);
-                                if (data.exec == "1") {
-                                    alertDialog(data.message, 'success');
-                                    $('input[name="cmp' + idCmp + '"]').click();
-                                    showDetaillCmp(idCmp);
-                                    $("#sky-tab1").attr('checked', false);
-                                    $("#sky-tab4").attr('checked', 'checked');
-                                }
-                                else {
-                                    alertDialog(data.message);
-                                }
-                            },
-                            error: function(e) {
-                                alertDialog(data);
+                        parms['idChoixCible'] = $('input:radio[name="ciblage_campagne_choix"]:checked').attr('id');
+                        if (parms['idChoixCible'] == 'idChosirCible') {
+                            parms['idCible'] = $('#listeCibleCampagne').val();
+                            if (parms['idCible'] == '') {
+                                send = false;
+                                if (!$('#spanlisteCibleCampagne').length)
+                                    $("#listeCibleCampagne").addClass('champVide').after("<span id= 'spanlisteCibleCampagne' class='alert-box error'>Choisir l'une des cibles</span>");
                             }
-                        });
-
-                        $(this).dialog("close");
+                        } else if (parms['idChoixCible'] == 'idComposerCible') {
+                            parms['cible'] = collectCiblage();
+                            if (!Object.keys(parms['cible']).length) {
+                                send = false;
+                                //alertDialog('Merci de composer une cible', 'warning');
+                            }
+                        }
+                        if (send) {
+                            $.ajax({
+                                type: "POST",
+                                async: false,
+                                dataType: 'json',
+                                url: "campagne/modif_save.php",
+                                data: {cmp: JSON.stringify(parms)},
+                                success: function (data) {
+                                    $("#popup").dialog("close");
+                                    if (data.exec == "1") {
+                                        alertDialog(data.message, 'success');
+                                        $('input[name="cmp' + idCmp + '"]').click();
+                                        showDetaillCmp(idCmp);
+                                        $("#sky-tab1").attr('checked', false);
+                                        $("#sky-tab2").attr('checked', 'checked');
+                                    } else {
+                                        alertDialog(data.message);
+                                    }
+                                },
+                                error: function (e) {
+                                    alertDialog(data);
+                                }
+                            });
+                            $(this).dialog("close");
+                        }
                     }
                 },
-                {text: "Annuler", click: function() {
+                {text: "Annuler", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -1195,15 +1200,15 @@ $(document).ready(function() {
             draggable: true,
             width: "1000",
             height: "550",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Annuler')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Enregistrer", click: function() {
+            buttons: [{text: "Enregistrer", click: function () {
                         parms = new Object();
                         parms['dmd'] = 'budget';
                         parms['idCmp'] = idCmp;
-                        $(".budget").each(function() {
+                        $(".budget").each(function () {
                             parms[$(this).attr('name')] = $(this).val();
                         })
                         $.ajax({
@@ -1212,7 +1217,7 @@ $(document).ready(function() {
                             dataType: 'json',
                             url: "campagne/modif_save.php",
                             data: {cmp: JSON.stringify(parms)},
-                            success: function(data) {
+                            success: function (data) {
                                 $("#popup").dialog("close");
 //                        var ret = JSON.parse(data);
                                 if (data.exec == "1") {
@@ -1221,12 +1226,11 @@ $(document).ready(function() {
                                     showDetaillCmp(idCmp);
                                     $("#sky-tab1").attr('checked', false);
                                     $("#sky-tab4").attr('checked', 'checked');
-                                }
-                                else {
+                                } else {
                                     alertDialog(data.message);
                                 }
                             },
-                            error: function(e) {
+                            error: function (e) {
                                 alertDialog(data);
                             }
                         });
@@ -1234,7 +1238,7 @@ $(document).ready(function() {
                         $(this).dialog("close");
                     }
                 },
-                {text: "Annuler", click: function() {
+                {text: "Annuler", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -1242,7 +1246,7 @@ $(document).ready(function() {
         });
     }
 
-    $(document.body).on("click", '#btnModifCmp', function() {
+    $(document.body).on("click", '#btnModifCmp', function () {
         var id = $('input:radio[name="sky-tabs"]:checked').attr('id'), fn = id.replace('sky-tab', 'fn_cmp_modif_');
         idCmp = $(this).attr('name');
         eval(fn + "(" + idCmp + ")");
@@ -1252,14 +1256,14 @@ $(document).ready(function() {
 //===========================================================       ENVOI des infos de la cible     =========================================================================
 //===========================================================================================================================================================================
 //===========================================================================================================================================================================
-    $(document.body).on("click", '.export_bl, .export_wl, .export_gt', function() {
+    $(document.body).on("click", '.export_bl, .export_wl, .export_gt', function () {
         var idCmp = $(this).attr('name'), wl = $(this).attr('id');
         $("#hIdCible").val(idCmp);
         $("#hwl").val(wl);
         $("#formSendExport").submit();
     });
 
-    $(document.body).on("click", '.executer_cible_sv', function() {
+    $(document.body).on("click", '.executer_cible_sv', function () {
         var idCmp = $(this).attr('name').replace('executer', '');
         $("#dialog-message").html("<center><img src = 'img/loading.gif'></center>");
         $('#dialog-message').load('ciblage/executer_cible_sv.php', {idCmp: idCmp});
@@ -1269,11 +1273,11 @@ $(document).ready(function() {
             height: "500",
             resizable: true,
             draggable: true,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
             },
             buttons: [
-                {text: "OK", click: function() {
+                {text: "OK", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -1281,7 +1285,7 @@ $(document).ready(function() {
         });
     });
 
-    $(document.body).on("click", '.executer_cible', function() {
+    $(document.body).on("click", '.executer_cible', function () {
         var idCible = $(this).attr('name').replace('executer', '');
         $("#dialog-message").html("<center><img src = 'img/loading.gif'></center>");
         $('#dialog-message').load('ciblage/executer_cible.php', {idCible: idCible});
@@ -1291,11 +1295,11 @@ $(document).ready(function() {
             height: "500",
             resizable: true,
             draggable: true,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
             },
             buttons: [
-                {text: "OK", click: function() {
+                {text: "OK", click: function () {
                         $(this).dialog("close");
                     }
                 }
@@ -1303,7 +1307,55 @@ $(document).ready(function() {
         });
     });
 
-    $(document.body).on("click", '.supprimer_cible', function() {
+    $(document.body).on("click", '.modifier_cible', function () {
+        var btnSup = $(this), idCible = btnSup.attr("name").replace('modifier', '');
+        $("#popup").load("ciblage/modifierCible.php", {idCible: idCible});
+        $("#popup").dialog({
+            modal: true,
+            resizable: true,
+            draggable: true,
+            width: "1200",
+            height: "550",
+            open: function (event, ui) {
+                $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
+                $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
+            },
+            buttons: [{text: "Enregistrer", click: function () {
+                        var tab_parms = collectCiblage();
+//                        tab_parms["tp_dmd"] = 'modifier_ciblage';
+                        $.ajax({
+                            url: "ciblage/modifierCible.php",
+                            async: false,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {parms: JSON.stringify(tab_parms)},
+                            success: function (retour) {
+                                if (retour.exec == '1') {
+                                    $('#popup').dialog("close");
+                                    $("input.masquer_det_cible[name='cible" + idCible + "']").click();
+                                    ;
+                                    alertDialog(retour.message, 'success');
+                                    $("input.afficher_det_cible[name='cible" + idCible + "']").click();
+                                    ;
+                                } else
+                                    alertDialog(retour.message, 'error');
+                            },
+                            error: function () {
+                                alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", "error");
+                            }
+                        });
+
+                    }
+                },
+                {text: "Annuler", click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+    });
+
+    $(document.body).on("click", '.supprimer_cible', function () {
         var btnSup = $(this), idCible = btnSup.attr("name").replace('supprimer', '');
         $("#dialog-message").html("Voulez vous supprimer la cible ?");
         $("#show_cible_" + idCible).addClass('supprimerLinge');
@@ -1311,34 +1363,33 @@ $(document).ready(function() {
             modal: true,
             resizable: true,
             draggable: false,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $.ajax({
                             url: "ciblage/removeCible.php",
                             async: false,
                             type: 'POST',
                             dataType: 'json',
                             data: {idCible: idCible},
-                            success: function(retour) {
+                            success: function (retour) {
                                 if (retour.exec == '1') {
                                     $("#ligne_cible_" + idCible).remove();
                                     $("#show_cible_" + idCible).remove();
                                     $("#dialog-message").dialog("close");
-                                    alertDialog(retour.message, 'succes');
-                                }
-                                else
+                                    alertDialog(retour.message, 'success');
+                                } else
                                     alertDialog(retour.message, 'error');
                             },
-                            error: function() {
+                            error: function () {
                                 alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", "error");
                             }
                         });
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $("#show_cible_" + idCible).removeClass('supprimerLinge');
                         $(this).dialog("close");
                     }
@@ -1346,29 +1397,26 @@ $(document).ready(function() {
             ]
         });
     });
-    $(document.body).on("click", '#exportCiblage', function() {
-//        fn_ciblage('exp', 'resultatCiblage');
+    $(document.body).on("click", '#exportCiblage', function () {
         if (!fn_ciblage('exp'))
             return false;
     });
-    $(document.body).on("click", '#enregistrerCiblage', function() {
+    $(document.body).on("click", '#enregistrerCiblage', function () {
         if ($("#idCibleName").val().trim() == '') {
             $("#idCibleName").addClass('champVide');
             alertDialog('Merci de saisir un nom pour la cible', 'warning');
         } else
             fn_ciblage('enregistrer');
-//            fn_ciblage('enregistrer', 'resultatCiblage');
     });
-    $(document.body).on("click", '#idCalculerCible', function() {
+    $(document.body).on("click", '#idCalculerCible', function () {
         fn_ciblage('ciblage');
-//        fn_ciblage('ciblage', 'resultatCiblage');
     });
     var tm_out;
     function fn_testChargementEnCours() {
         $.ajax({
             url: "ciblage/test_fin_ciblage.php",
             dataType: 'json',
-            success: function(retour) {
+            success: function (retour) {
                 if (retour.exec == 0) {
                     clearInterval(tm_out);
                     $("#dialog-message").html("<center>les données sont téléchargées</center>");
@@ -1377,51 +1425,47 @@ $(document).ready(function() {
         });
     }
 
-
-//    function fn_ciblage(type, idDivRetour) {
-    function fn_ciblage(type) {
-        var tab_parms = new Object(), send = false, message = "Vous devez ajouter au moins un critére", valCr;
+    function collectCiblage() {
+        var tab_parms = new Object(), send = true, message = "Vous devez ajouter au moins un critére", valCr;
         $("#cntGrCiblage .critere").removeClass('champVide');
-        tab_parms["tp_dmd"] = type;
-        tab_parms["associationGroupe"] = $("#cntGrCiblage input:checked[name=associationGroupe]").val();
-        tab_parms["cibleName"] = $("#idCibleName").val();
-        $("#cntGrCiblage input:checked.groupe").each(
-                function() {
-                    tab_parms[$(this).attr("name")] = $(this).val();
-                });
+
         if ($("#cntGrCiblage .critere").length) {
             $("#cntGrCiblage .critere").each(
-                    function() {
+                    function () {
                         if (!$(this).hasClass('ignored') && ($(this).is('input') || $(this).is('select'))) {
-                            send = true;
                             valCr = ($(this).hasClass("champCiblage")) ? $(this).val().split(":")[0] : $(this).val();
-//                            if ($(this).hasClass("multiple")) {
-//                                var valCr = "";
-//                                $("#" + $(this).attr("id") + " >option").each(function() {
-//                                    if (valCr == "")
-//                                        valCr = "(" + $(this).val();
-//                                    else
-//                                        valCr += ", " + $(this).val();
-//                                });
-//                                valCr += ")";
-//                            }
                             tab_parms[$(this).attr("id")] = valCr;
                             if (!$(this).val()) {
-                                //console.log($(this));
                                 $(this).addClass("champVide");
                                 send = false;
                                 message = "Merci de remplire tous les champs";
                             }
                         }
                     });
-            if (send) { // vérifier si périodes sont correctes
+            if (!Object.keys(tab_parms).length) {
+                message = "Ciblage Vide";
+                console.log(message);
+                send = false;
+            }
+            if (send) {
+                tab_parms["associationGroupe"] = $("#cntGrCiblage input:checked[name=associationGroupe]").val();
+                if ($("#idCibleName").length)
+                    tab_parms["cibleName"] = $("#idCibleName").val();
+                if ($("#idCibleHidden").length)
+                    tab_parms["cibleId"] = $("#idCibleHidden").val();
+                $("#cntGrCiblage input:checked.groupe").each(
+                        function () {
+                            tab_parms[$(this).attr("name")] = $(this).val();
+                        });
+                // vérifier si périodes sont correctes
                 var code = '', p_from = '', p_to = '';
-                $('.select_for_periode').each(function() {
+                $('.select_for_periode').each(function () {
                     code = $(this).attr('id').replace('idPeriodeFrom_', '').replace('idPeriodeTo_', '');
                     p_from = $("#idPeriodeFrom_" + code).val();
                     p_to = $("#idPeriodeTo_" + code).val();
                     if (p_to < p_from) {
                         send = false;
+                        tab_parms = new Object();
                         if (!$("#idPeriodeFrom_" + code).hasClass('champVide')) {
                             $("#idPeriodeFrom_" + code).addClass('champVide');
                             $("#idPeriodeTo_" + code).addClass('champVide');
@@ -1430,9 +1474,19 @@ $(document).ready(function() {
                         }
                     }
                 });
+            } else {
+                tab_parms = new Object();
+                alertDialog(message, 'warning');
             }
-        }
-        if (send) {
+        }else
+            alertDialog('Ciblage Vide', 'warning');
+        return tab_parms;
+    }
+
+    function fn_ciblage(type) {
+        var tab_parms = collectCiblage();
+        if (Object.keys(tab_parms).length) {
+            tab_parms["tp_dmd"] = type;
 //$("#" + idDivRetour).html("<center><img src = 'img/loading.gif'></center>");
             $("#dialog-message").html("<center><img src = 'img/loading.gif'></center>");
             if (type == 'exp') {
@@ -1444,17 +1498,17 @@ $(document).ready(function() {
                     height: "500",
                     resizable: true,
                     draggable: true,
-                    open: function(event, ui) {
+                    open: function (event, ui) {
                         $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                     },
                     buttons: [
-                        {text: "OK", click: function() {
+                        {text: "OK", click: function () {
                                 $(this).dialog("close");
                             }
                         }
                     ]
                 });
-                tm_out = setInterval(function() {
+                tm_out = setInterval(function () {
                     fn_testChargementEnCours();
                 }, 1000);
             } else {
@@ -1465,11 +1519,11 @@ $(document).ready(function() {
                     height: "500",
                     resizable: true,
                     draggable: true,
-                    open: function(event, ui) {
+                    open: function (event, ui) {
                         $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                     },
                     buttons: [
-                        {text: "OK", click: function() {
+                        {text: "OK", click: function () {
                                 $(this).dialog("close");
                             }
                         }
@@ -1478,8 +1532,6 @@ $(document).ready(function() {
             }
             return true;
         }
-        else
-            alertDialog(message, 'warning');
         return false;
     }
 
@@ -1489,7 +1541,7 @@ $(document).ready(function() {
 //===========================================================       Changement de champ ciblage     =========================================================================
 //===========================================================================================================================================================================
 //===========================================================================================================================================================================
-    $(document.body).on("change", '.champCiblage', function() {
+    $(document.body).on("change", '.champCiblage', function () {
         var code = $(this).val(), id = $(this).attr('id').replace('idTypeCompteur_', '');
         $.ajax({
             url: "ciblage/operateur_categorie.php",
@@ -1497,13 +1549,13 @@ $(document).ready(function() {
             type: 'POST',
             dataType: 'json',
             data: {code: code, id: id},
-            success: function(retour) {
+            success: function (retour) {
                 if (retour.sucess == '1') {
                     $("#operateur_" + id).html(retour.operator);
                     $("#divValRecherchee_" + id).html(retour.divValRech);
                 }
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
@@ -1515,7 +1567,7 @@ $(document).ready(function() {
 //===========================================================================================================================================================================
 
 
-    $(document.body).on("click", '.choix_valeur', function() {
+    $(document.body).on("click", '.choix_valeur', function () {
         var direct = $(this).attr("src").replace("img/", "").replace(".png", ""), critere = $(this).attr("name");
         var txtSel, idSel, opt;
         if (direct == "droite") {
@@ -1547,7 +1599,7 @@ $(document).ready(function() {
 //===========================================================================================================================================================================
 
 
-    $(document.body).on("change", '.operateur_ch_ciblage', function() {
+    $(document.body).on("change", '.operateur_ch_ciblage', function () {
         var operateur = $(this).val(), id = $(this).attr("id").replace('operateur_', ''),
                 code = $("#idTypeCompteur_" + id).val(), categorie = code.split(':')[1], multiple = "multiple";
         var mult = $("#valeurCritere_" + id).attr('multiple');
@@ -1569,11 +1621,11 @@ $(document).ready(function() {
 
     });
 
-    $(document.body).on("submit", '#formInfosNumero', function() {
+    $(document.body).on("submit", '#formInfosNumero', function () {
         $("#idAfficherInfosNumero").click();
         return false;
     });
-    $(document.body).on("click", '#idAfficherInfosNumero', function() {
+    $(document.body).on("click", '#idAfficherInfosNumero', function () {
         var numero = $('#idNumeroInfos').val();
         if ((numero.length == 8 && numero.substring(0, 1) == '3') || (numero.length == 11 && numero.substring(0, 4) == '2223')) {
             $("#informationClient").html("<center><img src = 'img/loading.gif'></center>");
@@ -1582,7 +1634,7 @@ $(document).ready(function() {
             alertDialog("Merci de saisir un numéro correcte", 'warning');
         }
     });
-    $(document.body).on("click", '#idAffichageStatsGlobal, #icon_exp_excel', function() {
+    $(document.body).on("click", '#idAffichageStatsGlobal, #icon_exp_excel', function () {
         var tab_parms = new Object(), send = true;
         var entete = $("#nature_stats_client :selected").text();
         entete += " / " + $("#type_donnee_stats_client :selected").text();
@@ -1607,7 +1659,7 @@ $(document).ready(function() {
             send = false;
         }
 
-        $.each(tab_parms, function(key, value) {
+        $.each(tab_parms, function (key, value) {
             if ((value == '') || (key == 'numero' && !((value.length == 8 && value.substring(0, 1) == '3') || (value.length == 11 && value.substring(0, 4) == '2223'))))
                 send = false;
         });
@@ -1623,20 +1675,19 @@ $(document).ready(function() {
                     async: true,
                     type: 'POST',
                     data: {parms: JSON.stringify(tab_parms)},
-                    success: function(retour) {
+                    success: function (retour) {
 
                         $("#divStatsGlobal").html(retour);
                     },
-                    error: function() {
+                    error: function () {
                         alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
                     }
                 });
             }
-        }
-        else
+        } else
             alertDialog("Merci de sélectionner les stats voulus", 'warning');
     });
-    $(document.body).on("click", '#idDeconnexion', function() {
+    $(document.body).on("click", '#idDeconnexion', function () {
         $("#dialog-message").html("<center class='alert-box warning'>Voulez vous se déconnecter ?</center>");
         $("#dialog-message").dialog({
             modal: true,
@@ -1644,23 +1695,23 @@ $(document).ready(function() {
             draggable: false,
             width: "400",
             height: "250",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $(this).dialog("close");
                         window.location = "conn/deconnexion.php";
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $(this).dialog("close");
                     }
                 }
             ]
         });
     });
-    $(document.body).on("click", '.reduireDIV', function() {
+    $(document.body).on("click", '.reduireDIV', function () {
         var name = 'divContent_' + $(this).attr('name'), imgName = 'img_reduire_' + $(this).attr('name');
         if ($(this).hasClass("reduire")) {
             $("div[name=" + name + "]").slideUp();
@@ -1674,14 +1725,14 @@ $(document).ready(function() {
             $("div[name=" + name + "] .critere").removeClass('ignored');
         }
     });
-    $(document.body).on("click", '.masquer_det_cible', function() {
+    $(document.body).on("click", '.masquer_det_cible', function () {
         var elt = $(this), idCible = elt.attr("name").replace("cible", "");
         $('#show_cible_' + idCible).remove();
         elt.removeClass('masquer_det_cible');
         elt.addClass('afficher_det_cible');
         elt.val('Afficher');
     });
-    $(document.body).on("click", '.afficher_det_cible', function() {
+    $(document.body).on("click", '.afficher_det_cible', function () {
         var elt = $(this), idCible = elt.attr("name").replace("cible", "");
         $('#ligne_cible_' + idCible).after("<tr id='show_cible_" + idCible + "'><td id='show_cible_td_" + idCible + "' colspan=5><center><img src = 'img/loading.gif'></center></td></tr>");
         elt.addClass('masquer_det_cible').removeClass('afficher_det_cible').val('Masquer');
@@ -1691,13 +1742,13 @@ $(document).ready(function() {
             type: 'POST',
             dataType: 'json',
             data: {idCible: idCible},
-            success: function(retour) {
+            success: function (retour) {
                 if (retour.exec == "1") {
                     var val = retour.message;
                     $('#show_cible_' + idCible).html(val);
                 }
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
@@ -1705,7 +1756,7 @@ $(document).ready(function() {
 
     function getIdGroup() {
         var idG = 0;
-        $(".divGroupe").each(function() {
+        $(".divGroupe").each(function () {
             id = $(this).attr("id").replace('groupe', '');
             if (id > idG)
                 idG = parseInt(id);
@@ -1715,7 +1766,7 @@ $(document).ready(function() {
 
     function getIdCritere() {
         var idC = 0;
-        $(".divCritere").each(function() {
+        $(".divCritere").each(function () {
             tab = $(this).attr("id").split('_');
             id = tab[2];
             if (id > idC)
@@ -1726,27 +1777,25 @@ $(document).ready(function() {
 //***********************************************************************************************************
 //****************************************** BONUS CAMPAGNE  ************************************************
 //***********************************************************************************************************
-    $(document.body).on("change", '.ShowSMSBonus', function() {
+    $(document.body).on("change", '.ShowSMSBonus', function () {
         var id = $(this).attr('id').replace('idShowSMSBonus', '');
         if ($(this).is(':checked')) {
             if (!$('#divGroupeBonus' + id + ' .divCntBonus').length) {
                 $(this).attr('checked', false);
                 alertDialog("Vous devez definir un bonus", 'warning');
-            }
-            else {
+            } else {
                 $('#idSMSBonusAr' + id).slideDown(500);
                 $('#idSMSBonusFr' + id).slideDown(500);
                 $('#tags_' + id).slideDown(500);
             }
-        }
-        else {
+        } else {
             $('#idSMSBonusAr' + id).slideUp(500);
             $('#idSMSBonusFr' + id).slideUp(500);
             $('#tags_' + id).slideUp(500);
         }
     });
 
-    $(document.body).on("change", '#type_declencheur', function() {
+    $(document.body).on("change", '#type_declencheur', function () {
         var type = $(this).val(), idG = 1;
         if (type != 'fidelite') {
             idG = getIdGroup();
@@ -1754,7 +1803,7 @@ $(document).ready(function() {
         $("#div_detail_declencheur").load("campagne/declencheur/declencheur_type.php", {type: type, idGroup: idG});
     });
 
-    $(document.body).on("change", 'input:radio[name="ciblage_campagne_choix"]', function() {
+    $(document.body).on("change", 'input:radio[name="ciblage_campagne_choix"]', function () {
         if ($(this).attr('id') == "idChosirCible")
             $("#idDivCiblabeCampagne").load('campagne/liste_cible.php');
         else if ($(this).attr('id') == "idComposerCible") {
@@ -1771,19 +1820,19 @@ $(document).ready(function() {
             type: 'POST',
             dataType: 'json',
             data: {idCible: idCible},
-            success: function(retour) {
+            success: function (retour) {
                 if (retour.exec == "1") {
                     var val = retour.message;
                     $('#divShowCilbeCreationCampagne').html("<table width=100%><tr>" + val + "</tr></table>");
                 }
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
     }
 
-    $(document.body).on("change", '#listeCibleCampagne', function() {
+    $(document.body).on("change", '#listeCibleCampagne', function () {
         var idCible = $(this).val();
         if (idCible == '')
             $('#divShowCilbeCreationCampagne').html("");
@@ -1795,7 +1844,7 @@ $(document).ready(function() {
 //****************************************** ENREGISTRER CAMPAGNE  ******************************************
 //***********************************************************************************************************
 
-    $(document.body).on("click", '#idEnrgistrerCampagne', function() {
+    $(document.body).on("click", '#idEnrgistrerCampagne', function () {
         var btnEnr = $(this);
         btnEnr.hide();
         retour_enr_cmp = '';
@@ -1805,15 +1854,13 @@ $(document).ready(function() {
             alertDialog(retour_enr_cmp, 'error');
             $("#b1").click();
             btnEnr.show();
-        }
-        else if (!verifOngletCiblage()) {
+        } else if (!verifOngletCiblage()) {
             if (retour_enr_cmp == '')
                 retour_enr_cmp = 'Merci de faire les corrections !!';
             alertDialog(retour_enr_cmp, 'error');
             $("#b2").click();
             btnEnr.show();
-        }
-        else if (!verifOngletBonus()) {
+        } else if (!verifOngletBonus()) {
             if (retour_enr_cmp == '')
                 retour_enr_cmp = 'Merci de faire les corrections !!';
             alertDialog(retour_enr_cmp, 'error');
@@ -1831,22 +1878,22 @@ $(document).ready(function() {
             type: 'POST',
             dataType: 'text',
             data: {idCmp: idCmp},
-            success: function(retour) {
+            success: function (retour) {
                 $('#show_cible_' + idCmp).html(retour);
                 $('input[name="cmp' + idCmp + '"]').removeClass('afficher_det_cmp');
                 $('input[name="cmp' + idCmp + '"]').addClass('masquer_det_cmp');
                 $('input[name="cmp' + idCmp + '"]').val('Masquer');
 //                        }
             },
-            error: function() {
+            error: function () {
                 alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
             }
         });
     }
 
-    $(document.body).on("click", '.afficher_det_cmp', function() {
+    $(document.body).on("click", '.afficher_det_cmp', function () {
         var elt = $(this), idCmp = elt.attr("name").replace("cmp", "");
-        $('.detail-campagne').each(function() {
+        $('.detail-campagne').each(function () {
             var eltS = $(this), idCmpS = eltS.attr("id").replace("show_cible_", "cmp");
             $('input[name=' + idCmpS + ']').removeClass('masquer_det_cmp').addClass('afficher_det_cmp').val('Afficher');
             eltS.remove();
@@ -1854,7 +1901,7 @@ $(document).ready(function() {
         showDetaillCmp(idCmp);
     });
 
-    $(document.body).on("click", '.masquer_det_cmp', function() {
+    $(document.body).on("click", '.masquer_det_cmp', function () {
         var elt = $(this), idCmp = elt.attr("name").replace("cmp", "");
         $('#show_cible_' + idCmp).remove();
         elt.removeClass('masquer_det_cmp');
@@ -1862,7 +1909,7 @@ $(document).ready(function() {
         elt.val('Afficher');
     });
 
-    $(document.body).on("click", '.gererCampagne', function() {
+    $(document.body).on("click", '.gererCampagne', function () {
         var btnSup = $(this), name = btnSup.attr("name").split('_');
         var idCmp = name[1], action = name[0];
         switch (action) {
@@ -1889,11 +1936,11 @@ $(document).ready(function() {
             height: 300,
             resizable: true,
             draggable: false,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Annuler')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Enregistrer", click: function() {
+            buttons: [{text: "Enregistrer", click: function () {
                         var motif = $('#motifGererCmp').val();
                         if (motif != '')
                             $.ajax({
@@ -1902,16 +1949,15 @@ $(document).ready(function() {
                                 type: 'POST',
                                 dataType: 'json',
                                 data: {idCmp: idCmp, action: action, motif: motif},
-                                success: function(retour) {
+                                success: function (retour) {
                                     if (retour.exec == '1') {
                                         $("#dialog-message").dialog("close");
                                         alertDialog(retour.message, 'success');
                                         $('#cssmenu a.active').click();
-                                    }
-                                    else
+                                    } else
                                         alertDialog(retour.message, 'error');
                                 },
-                                error: function() {
+                                error: function () {
                                     alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", 'error');
                                 }
                             });
@@ -1921,7 +1967,7 @@ $(document).ready(function() {
 
                     }
                 },
-                {text: "Annuler", click: function() {
+                {text: "Annuler", click: function () {
                         $("#show_cible_" + idCmp).removeClass('supprimerLinge');
                         $(this).dialog("close");
                     }
@@ -1930,7 +1976,7 @@ $(document).ready(function() {
         });
     });
 
-    $(document.body).on("click", '.supprimer_campagne', function() {
+    $(document.body).on("click", '.supprimer_campagne', function () {
         var btnSup = $(this), idCmp = btnSup.attr("name").replace('supprimer', '');
         $("#dialog-message").html("Voulez vous supprimer la campagne ?");
         $("#show_cible_" + idCmp).addClass('supprimerLinge');
@@ -1938,34 +1984,33 @@ $(document).ready(function() {
             modal: true,
             resizable: true,
             draggable: false,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $.ajax({
                             url: "campagne/removeCampagne.php",
                             async: false,
                             type: 'POST',
                             dataType: 'json',
                             data: {idCmp: idCmp},
-                            success: function(retour) {
+                            success: function (retour) {
                                 if (retour.exec == '1') {
                                     $("#ligne_campagne_" + idCmp).remove();
                                     $("#show_cible_" + idCmp).remove();
                                     $("#dialog-message").dialog("close");
                                     alertDialog(retour.message, 'success');
-                                }
-                                else
+                                } else
                                     alertDialog(retour.message, 'error');
                             },
-                            error: function() {
+                            error: function () {
                                 alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", 'error');
                             }
                         });
                     }
                 },
-                {text: "Non", click: function() {
+                {text: "Non", click: function () {
                         $("#show_cible_" + idCmp).removeClass('supprimerLinge');
                         $(this).dialog("close");
                     }
@@ -1973,7 +2018,7 @@ $(document).ready(function() {
             ]
         });
     });
-    $(document.body).on("click", '.valider_campagne', function() {
+    $(document.body).on("click", '.valider_campagne', function () {
         var btnSup = $(this), idCmp = btnSup.attr("name").replace('valider', '');
         var html = 'Commentaire :<br><br><textarea cols ="30" rows ="3" id="motifGererCmp"></textarea>';
         $("#dialog-message").html(html);
@@ -1984,11 +2029,11 @@ $(document).ready(function() {
             height: 300,
             resizable: true,
             draggable: false,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Annuler')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Enregistrer", click: function() {
+            buttons: [{text: "Enregistrer", click: function () {
                         var motif = $('#motifGererCmp').val();
                         if (motif != '')
                             $.ajax({
@@ -1997,17 +2042,16 @@ $(document).ready(function() {
                                 type: 'POST',
                                 dataType: 'json',
                                 data: {idCmp: idCmp, motif: motif},
-                                success: function(retour) {
+                                success: function (retour) {
                                     if (retour.exec == '1') {
                                         $("#ligne_campagne_" + idCmp).remove();
                                         $("#show_cible_" + idCmp).remove();
                                         $("#dialog-message").dialog("close");
                                         alertDialog(retour.message, 'success');
-                                    }
-                                    else
+                                    } else
                                         alertDialog(retour.message, 'error');
                                 },
-                                error: function() {
+                                error: function () {
                                     alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", "error");
                                 }
                             });
@@ -2016,14 +2060,14 @@ $(document).ready(function() {
                         }
                     }
                 },
-                {text: "Annuler", click: function() {
+                {text: "Annuler", click: function () {
                         $(this).dialog("close");
                     }
                 }
             ]
         });
     });
-    $(document.body).on("click", '.leg_log', function() {
+    $(document.body).on("click", '.leg_log', function () {
         idDiv = $(this).attr('name');
         content = $("#" + idDiv).html();
         $("#dialog-message").html(content);
@@ -2031,18 +2075,18 @@ $(document).ready(function() {
             modal: true,
             width: "600",
             height: "500",
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
                 $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
             },
-            buttons: [{text: "Oui", click: function() {
+            buttons: [{text: "Oui", click: function () {
                         $(this).dialog("close");
                     }
                 }]
         });
     });
 
-    $(document.body).on("click", '.ch_date', function() {
+    $(document.body).on("click", '.ch_date', function () {
         var spanL = $(this), periode = spanL.text();
         if ((spanL.hasClass('missing'))) {
             url = 'admin/supervision/missingFiles.php';
@@ -2060,10 +2104,10 @@ $(document).ready(function() {
                 type: 'POST',
                 dataType: 'html',
                 data: {periode: periode},
-                success: function(retour) {
+                success: function (retour) {
                     $("#details" + periode).html('<td colspan="' + colspan + '" bgcolor="gray">' + retour + '</td>');
                 },
-                error: function() {
+                error: function () {
                     alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", "error");
                 }
             });
@@ -2073,7 +2117,7 @@ $(document).ready(function() {
         }
     });
 
-    $(document.body).on("click", '.clsFile', function() {
+    $(document.body).on("click", '.clsFile', function () {
         var jf = $(this).attr('name');
         var url = ($(this).hasClass('missing')) ? "admin/supervision/liste_cdrs_missing.php" : "admin/supervision/liste_cdrs_journee.php";
         $("#dialog-message").html("<center><img src = 'img/loading.gif'></center>");
@@ -2084,11 +2128,11 @@ $(document).ready(function() {
             height: "620",
             resizable: true,
             draggable: true,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
             },
             buttons: [
-                {text: "OK", click: function() {
+                {text: "OK", click: function () {
                         $("#dialog-message").html("");
                         $(this).dialog("close");
                     }
@@ -2106,21 +2150,21 @@ $(document).ready(function() {
             retour_enr_cmp = 'Vous devez avoir au moins un bonus';
             result = false;
         }
-        $('#cntBonus select').each(function() {
+        $('#cntBonus select').each(function () {
             if ($(this).val() == "") {
                 $(this).addClass('champVide');
                 result = false;
             }
         });
 
-        $('#cntBonus input:text').each(function() {
+        $('#cntBonus input:text').each(function () {
             if ($(this).val() == "") {
                 $(this).addClass('champVide');
                 result = false;
             }
         });
 
-        $('.ShowSMSBonus:checked').each(function() {
+        $('.ShowSMSBonus:checked').each(function () {
             idTxt = $(this).attr('id').replace('idShowSMSBonus', '');
             if ($('#idSMSBonusAr' + idTxt).val().trim() == '') {
                 $('#idSMSBonusAr' + idTxt).addClass('champVide');
@@ -2136,7 +2180,7 @@ $(document).ready(function() {
 
     function verif_Declencheur_Bonus() {
         var result = true;
-        $('#cntGrEvent select').each(function() {
+        $('#cntGrEvent select').each(function () {
             if ($(this).val() == "") {
                 $(this).addClass('champVide');
                 result = false;
@@ -2144,7 +2188,7 @@ $(document).ready(function() {
         });
         if (!result)
             return false;
-        $('#cntGrEvent input:text').each(function() {
+        $('#cntGrEvent input:text').each(function () {
             if ($(this).val() == "") {
                 $(this).addClass('champVide');
                 result = false;
@@ -2166,7 +2210,7 @@ $(document).ready(function() {
         if (!result)
             return false;
         var nbrBnsGr = 0;
-        $('.divGroupe.dgDeclencheur').each(function() {
+        $('.divGroupe.dgDeclencheur').each(function () {
             var idG = $(this).attr('id');
             var nbBG = $('#' + idG + ' .divCntBonus').length;
             if (!nbBG)
@@ -2217,8 +2261,7 @@ $(document).ready(function() {
                 var message = ret.message;
                 alertDialog(message, 'warning');
                 return false;
-            }
-            else
+            } else
                 return true;
         }
     }
@@ -2229,7 +2272,7 @@ $(document).ready(function() {
         retour['message'] = '';
         if ($("#cntGrCiblage .critere").length) {
             $("#cntGrCiblage .critere").each(
-                    function() {
+                    function () {
                         if (!$(this).val()) {
                             $(this).addClass("champVide");
                             retour['send'] = false;
@@ -2238,7 +2281,7 @@ $(document).ready(function() {
                     });
             if (retour['send']) {   // vérifier si périodes sont correctes
                 var code = '', p_from = '', p_to = '';
-                $('#cntGrCiblage .select_for_periode').each(function() {
+                $('#cntGrCiblage .select_for_periode').each(function () {
                     code = $(this).attr('id').replace('idPeriodeFrom_', '').replace('idPeriodeTo_', '');
                     p_from = $("#idPeriodeFrom_" + code).val();
                     p_to = $("#idPeriodeTo_" + code).val();
@@ -2310,17 +2353,17 @@ $(document).ready(function() {
             tab_parms["associationGroupe"] = $("#cntGrCiblage input:checked[name=associationGroupe]").val();
             tab_parms["cibleName"] = $("#idCibleName").val();
             $("#cntGrCiblage input:checked.groupe").each(
-                    function() {
+                    function () {
                         tab_parms[$(this).attr("name")] = $(this).val();
                     });
             if ($("#cntGrCiblage .critere").length) {
                 send = true;
                 $("#cntGrCiblage .critere").each(
-                        function() {
+                        function () {
                             valCr = ($(this).hasClass("champCiblage")) ? $(this).val().split(":")[0] : $(this).val();
                             if ($(this).hasClass("multiple")) {
                                 var valCr = "";
-                                $("#" + $(this).attr("id") + " >option").each(function() {
+                                $("#" + $(this).attr("id") + " >option").each(function () {
                                     if (valCr == "")
                                         valCr = "('" + $(this).val() + "'";
                                     else
@@ -2348,7 +2391,7 @@ $(document).ready(function() {
     }
 
     function params_budget() {
-        $('input.budget').each(function() {
+        $('input.budget').each(function () {
             parms_gle[$(this).attr('name')] = ($(this).val() == '') ? 0 : $(this).val();
         })
     }
@@ -2375,21 +2418,20 @@ $(document).ready(function() {
         var parms = new Object();
         parms['type_dcl'] = $("#type_declencheur").val();
         parms['dcl_grp'] = new Object();
-        $('#cntGrEvent .dgDeclencheur').each(function() {
+        $('#cntGrEvent .dgDeclencheur').each(function () {
             idG = $(this).attr('id'), id = idG.replace('groupe', '');
             parms['dcl_grp'][id] = new Object();
             parms['dcl_grp'][id]['nature'] = $('#idSelectNatureTrafic' + id).val();
             if ($('#idShowSMSBonus' + id).is(':checked')) {
                 parms['dcl_grp'][id]['sms_bonusAr'] = $('#idSMSBonusAr' + id).val();
                 parms['dcl_grp'][id]['sms_bonusFr'] = $('#idSMSBonusFr' + id).val();
-            }
-            else {
+            } else {
                 parms['dcl_grp'][id]['sms_bonusAr'] = '';
                 parms['dcl_grp'][id]['sms_bonusFr'] = '';
             }
             parms['dcl_grp'][id]['type'] = $('#idSelectTypeDonnee' + id).val();
             parms['dcl_grp'][id]['dcl'] = new Object();
-            $('#' + idG + ' .divCritere').each(function() {
+            $('#' + idG + ' .divCritere').each(function () {
                 idc = $(this).attr('id').replace('critere', '');
                 parms['dcl_grp'][id]['dcl'][idc] = new Object();
                 parms['dcl_grp'][id]['dcl'][idc]['code'] = $('#idTypeCompteur' + idc).val().split(':')[0];
@@ -2400,7 +2442,7 @@ $(document).ready(function() {
 
             });
             parms['dcl_grp'][id]['bns'] = new Object();
-            $('#' + idG + ' .divCntBonus').each(function() {
+            $('#' + idG + ' .divCntBonus').each(function () {
                 idBonus = $(this).attr('id').replace('divCntBonus', '');
                 parms['dcl_grp'][id]['bns'][idBonus] = new Object();
                 parms['dcl_grp'][id]['bns'][idBonus]['type'] = $('#idTypeBonus' + idBonus).val();
@@ -2413,7 +2455,7 @@ $(document).ready(function() {
 
         });
         parms['bnsGlb'] = new Object();
-        $('#cntBonus .divCntBonus').each(function() {
+        $('#cntBonus .divCntBonus').each(function () {
             id = $(this).attr('id').replace('divCntBonus', '');
             parms['bnsGlb'][id] = new Object();
             parms['bnsGlb'][id]['type'] = $('#idTypeBonus' + id).val();
@@ -2449,18 +2491,17 @@ $(document).ready(function() {
             contentType: false,
             cache: false,
             timeout: 600000,
-            success: function(data) {
+            success: function (data) {
                 $("#dialog-message").dialog("close");
 //                        var ret = JSON.parse(data);
                 if (data.exec == "1") {
                     alertDialog(data.message, 'success');
-                }
-                else {
+                } else {
                     alertDialog(data.message, 'error');
                     $('#idEnrgistrerCampagne').show();
                 }
             },
-            error: function(e) {
+            error: function (e) {
                 $("#dialog-message").dialog("close");
                 $("#dialog-message").html(data);
                 $('#idEnrgistrerCampagne').show();
@@ -2517,8 +2558,8 @@ function fnDataTable(clm, order, ob, id) {
     });
 }
 
-$.fn.insertAtCaret = function(myValue) {
-    return this.each(function() {
+$.fn.insertAtCaret = function (myValue) {
+    return this.each(function () {
         //IE support
         if (document.selection) {
             this.focus();

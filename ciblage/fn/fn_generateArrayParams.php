@@ -5,6 +5,8 @@ function generateArrayParams($tab_params) {
     $tables = array();
     foreach ($tab_params as $key => $val) {
         $tabExp = explode("_", $key);
+        if(count($tabExp) == 1)
+            continue;
         if (is_array($val)) {
             $val = '(' . implode(', ', $val) . ')';
         }

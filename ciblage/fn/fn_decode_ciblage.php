@@ -10,6 +10,7 @@ function decode_ciblage($ciblage, $show = 0) {
     $tbAssoc = array('AND' => 'Appliquer tous les critères', 'OR' => 'Appliquer au moins un critère');
     $table = json_decode($ciblage, true);
     $i = 1;
+    //print_r($table);
     foreach ($table as $grp => $tbG) {
         $assoc = strtoupper($tbG["association"]);
         $retCible .= '<ul>';

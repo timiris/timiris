@@ -1,4 +1,5 @@
 <?php
+
 if (!isset($rep))
     $rep = '../';
 require_once $rep . "fn_security.php";
@@ -34,6 +35,10 @@ try {
     unset($tab_params["tp_dmd"]);
     $associationGroupe = $tab_params["associationGroupe"];
     unset($tab_params["associationGroupe"]);
+    if (isset($tab_params["cibleId"])) {
+        $cibleId = $tab_params["cibleId"];
+        unset($tab_params["cibleId"]);
+    }
     $tables = generateArrayParams($tab_params);
     if ($tp_dmd == 'enregistrer') {
         $cibleName = str_replace("'", "''", $cibleName);
@@ -47,10 +52,8 @@ try {
         $req = 'INSERT INTO app_cibles (association_group, date_creation, fkid_user, cible)  VALUES
                 (\'' . $associationGroupe . '\', \'' . date('Y-m-d H:i:s') . '\',
                     ' . $_SESSION["user"]["id"] . ', \'' . json_encode($tables) . '\')';
-        //$result = $connection->query($req);
-        // Enregister la campagne
         exit();
-    }
+    } 
 
     $req_global = generateRequete($tp_dmd, $tables, $associationGroupe);
 //    echo $req_global;

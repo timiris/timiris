@@ -1,7 +1,8 @@
 <?php
 
-//$repGlobal = 'E:/depot/test';
-$repGlobal = '';
+$repGlobal = 'E:/depot/test';
+//$repGlobal = '';
+$endOfLine = ($repGlobal == '') ? "\r\n" : "<br>";
 $rep_chargement = $repGlobal . '/tim_DATA/cdrs/chargement/in/';
 $rep_doublons = $repGlobal . '/tim_DATA/cdrs/doublons/in/';
 $rep_file_rejected = $repGlobal . '/tim_DATA/cdrs/rejected/in/';
@@ -152,14 +153,14 @@ function execute_req_table($tb, $arRq, $connection) {
                 if (in_array($num, $arr_nc)) {
                     foreach ($arrCh as $col)
                         if (substr($col, 0, 1) == 'a')
-                            $arrCibTblVal[$idC]+= $arRq[$num][$col];
+                            $arrCibTblVal[$idC] += $arRq[$num][$col];
                 }
             }
             foreach ($arrGtTbl as $idC => $arr_nc) {
                 if (in_array($num, $arr_nc)) {
                     foreach ($arrCh as $col)
                         if (substr($col, 0, 1) == 'a')
-                            $arrGtTblVal[$idC]+= $arRq[$num][$col];
+                            $arrGtTblVal[$idC] += $arRq[$num][$col];
                 }
             }
         }
@@ -321,8 +322,7 @@ function fn_eligibility(&$tbCDR, $cdrType) {
                             $cr['operateur'] = 'in';
                         elseif ($cr['operateur'] == '!=')
                             $cr['operateur'] = 'not in';
-                    }
-                    else
+                    } else
                         $fieldValue = $tbCDR[$cr['cdrField']];
                     switch ($cr['operateur']) {
                         case '=': if (!($fieldValue == $cr['valeur']))
@@ -505,8 +505,7 @@ function execute_all_bonus($arr_glb_bonus, $connection, $dtjAction) {
                         ) ab on ab.numero = acc.numero and ab.fk_id_campagne = acc.fk_id_campagne
                         WHERE acc.fk_id_campagne = $cmp and acc.numero in ($chaineMSISDN)
                         group by att.numero";
-            }
-            else
+            } else
                 $reqVerifNum = "SELECT att.numero, has_fidelity, 0 client_nbr_bonus, 0 client_montant_bonus, 0 client_nbr_bonus_jr, 0 client_montant_bonus_jr    
                     FROM app_campagne_cible acc
                         join data_attribut att on acc.numero = att.numero
@@ -535,11 +534,11 @@ function execute_all_bonus($arr_glb_bonus, $connection, $dtjAction) {
                             if ($limitation_cmp['cmp_montant_bonus_jr'] >= $bns['valorisation'] && $limitation_cmp['cmp_montant_bonus'] >= $bns['valorisation'] &&
                                     $limitation_client['client_montant_bonus_jr'] >= $bns['valorisation'] && $limitation_client['client_montant_bonus'] >= $bns['valorisation']) {
                                 if (!$idBonus) {
-                                    $limitation_cmp['cmp_nbr_bonus_jr']--;
-                                    $limitation_cmp['cmp_nbr_bonus']--;
+                                    $limitation_cmp['cmp_nbr_bonus_jr'] --;
+                                    $limitation_cmp['cmp_nbr_bonus'] --;
                                     //echo "\n\r".$limitation_cmp['cmp_nbr_bonus'];
-                                    $limitation_client['client_nbr_bonus_jr']--;
-                                    $limitation_client['client_nbr_bonus']--;
+                                    $limitation_client['client_nbr_bonus_jr'] --;
+                                    $limitation_client['client_nbr_bonus'] --;
                                     $connection->query($req_ins);
                                     $idBonus = $connection->lastInsertId('bonus_id_seq');
                                     //echo "\n\r Bonus pour le numéro : $msisdn";

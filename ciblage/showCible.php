@@ -27,6 +27,7 @@ try {
 			</form>
 			';
         $inpt .= '<p><input class="button12 black supprimer_cible" style = "width:80px; font-size : 70%; font-weight:bold;"  type = "button" value = "Supprimer"  name = "supprimer' . $idCible . '"></p>';
+        $inpt .= '<p><input class="button12 black modifier_cible" style = "width:80px; font-size : 70%; font-weight:bold;"  type = "button" value = "Modifier"  name = "modifier' . $idCible . '"></p>';
         $tbRetour['message'] = '<td colspan = "4">
 		Association entre les groupes : ' . $tbAssocGr[strtoupper($ligne->association_group)] . '<ul>';
         $tbRetour['message'] .= decode_ciblage($ligne->cible, 1);

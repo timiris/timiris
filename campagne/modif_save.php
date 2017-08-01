@@ -93,22 +93,46 @@ try {
         if ($connection->query('COMMIT')) {
             $tbRetour['exec'] = 1;
             $tbRetour['message'] = 'Campagne modifiée avec succès';
-        }
-        else
+        } else
             throw ("COMMIT Not Worked ");
-    }elseif($tbCmp['dmd'] == 'budget'){
+    }elseif ($tbCmp['dmd'] == 'budget') {
         $idCmp = (int) $tbCmp['idCmp'];
         unset($tbCmp['idCmp']);
         unset($tbCmp['dmd']);
-        foreach($tbCmp as $key=>$val){
-            $tbCmp[$key] = $key.' = '.(int) $val;
+        foreach ($tbCmp as $key => $val) {
+            $tbCmp[$key] = $key . ' = ' . (int) $val;
         }
-        $connection->query('UPDATE app_campagne SET '.implode(',', $tbCmp).' WHERE id = '.$idCmp);
+        $connection->query('UPDATE app_campagne SET ' . implode(',', $tbCmp) . ' WHERE id = ' . $idCmp);
         if ($connection->query('COMMIT')) {
             $tbRetour['exec'] = 1;
             $tbRetour['message'] = 'Campagne modifiée avec succès';
-        }
-        else
+        } else
+            throw ("COMMIT Not Worked ");
+    }elseif ($tbCmp['dmd'] == 'ciblage') {
+        $idCmp = (int) $tbCmp['idCmp'];
+        unset($tbCmp['idCmp']);
+        unset($tbCmp['dmd']);
+        print_r($tbCmp);
+        if ($tbCmp['idChoixCible'] == 'idComposerCible') {
+            $cible = $tbCmp['cible'];
+            $associationGroupe = $cible["associationGroupe"];
+            unset($cible["associationGroupe"]);
+            if (isset($cible["cibleId"]))
+                unset($cible["cibleId"]);
+            $tables = generateArrayParams($cible);
+            $req = 'INSERT INTO app_cibles (association_group, date_creation, fkid_user, cible) VALUES
+				(\'' . $associationGroupe . '\', \'' . date('Y-m-d H:i:s') . '\', ' . $_SESSION["user"]["id"] . ', \'' . json_encode($tables) . '\')';
+            $result = $connection->query($req);
+            $idCible = $connection->lastInsertId('id_cible_seq');
+        } elseif ($tbCmp['idChoixCible'] == 'idChosirCible') {
+            $idCible = (int) $tbCmp['idCible'];
+        } else
+            $idCible = 0;
+        $connection->query('UPDATE app_campagne SET id_cible = ' . $idCible . ' WHERE id = ' . $idCmp);
+        if ($connection->query('COMMIT')) {
+            $tbRetour['exec'] = 1;
+            $tbRetour['message'] = 'Campagne modifiée avec succès';
+        } else
             throw ("COMMIT Not Worked ");
     }
 } catch (Exception $e) {

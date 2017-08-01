@@ -39,6 +39,7 @@ try {
         $idCmp = $ligne->id;
         $has_wl = $ligne->has_wl;
         $typeBonus = $ligne->type_bonus;
+        echo "Début Start campagne $idCmp\n\r";
         $connection->query("insert into app_campagne_kpi (fk_id_campagne, tbname) 
             select distinct $idCmp, tablecode||'_'||lower(code_cmpt) tbname from ref_compteurs cmpt 
             JOIN ref_type_donnee td on td.id = cmpt.fk_id_type where tablecode like 'data%' and fk_id_nature not in (1, 11, 13, 14)");
@@ -52,22 +53,25 @@ try {
                 $tables = json_decode($ligne_cible->cible, true);
                 $req_global = generateRequete('cmp', $tables, $associationGroupe);
                 // Get number of cible
+                echo "Début Calcul cible campagne $idCmp\n\r";
                 $req_ins = "select count(*) nbr_cible from ($req_global) tt 
                         where tt.numero not in(select numero from app_campagne_exclus where fk_id_campagne = $idCmp)
                         AND tt.numero not in(select numero from app_campagne_cible where fk_id_campagne = $idCmp)";
                 $res_ins = $connection->query($req_ins);
+//                echo "\n\r $req_ins \n\r";
                 $li_ins = $res_ins->fetch(PDO::FETCH_OBJ);
                 $nbGT = (int) (0.01 * ($li_ins->nbr_cible));
                 $nbGT = ($nbGT > 200) ? 200 : $nbGT;
                 $nbrCible = $li_ins->nbr_cible - $nbGT;
-
+                
+                echo "Début insert gt campagne $idCmp\n\r";
                 $req_ins = "insert into app_campagne_exclus(fk_id_campagne, numero, is_bl) 
                     select $idCmp, tt.numero, false from ($req_global) tt 
                         where tt.numero not in(select numero from app_campagne_cible where fk_id_campagne = $idCmp)
                         order by  random() limit $nbGT";
                 $res_ins = $connection->query($req_ins);
-
-
+                
+                echo "Début insert cible campagne $idCmp\n\r";
                 $req_ins = "insert into app_campagne_cible(fk_id_campagne, numero, is_wl) 
                     SELECT $idCmp, tt.numero, false FROM ($req_global) tt 
                         where tt.numero not in(select numero from app_campagne_cible where fk_id_campagne = $idCmp)
@@ -86,14 +90,15 @@ try {
             $nbGT = (int) (0.01 * ($li_ins->nbr_cible));
             $nbGT = ($nbGT > 200) ? 200 : $nbGT;
             $nbrCible = $li_ins->nbr_cible - $nbGT;
-
+            
+            echo "Début insert gt campagne $idCmp\n\r";
             $req_ins = "insert into app_campagne_exclus(fk_id_campagne, numero, is_bl) 
                     SELECT $idCmp, numero, false FROM data_attribut where status in (1, 2) and profil != 333333
                         and numero not in(select numero from app_campagne_exclus where fk_id_campagne = $idCmp)
                         order by  random() limit $nbGT";
             $res_ins = $connection->query($req_ins);
-
-
+            
+            echo "Début insert cible campagne $idCmp\n\r";
             $req_ins = "insert into app_campagne_cible(fk_id_campagne, numero, is_wl)
                 SELECT $idCmp, numero, false FROM data_attribut where status in (1, 2) and profil != 333333 
                         and numero not in(select numero from app_campagne_cible where fk_id_campagne = $idCmp)
@@ -109,8 +114,8 @@ try {
         }
         else
             $newStatusCmp = CMP_ENCOURS;
-
-
+        
+        echo "update infos campagne $idCmp\n\r";
         $req_upd = "update app_campagne set nbr_cible = nbr_cible + $nbrCible, etat = " . $newStatusCmp . ",dt_lancement_reelle= '" . date('Y-m-d H:i:s') . "', nbr_gc = $nbGT  where id = $idCmp";
         $res_upd = $connection->query($req_upd);
         if ($newStatusCmp == CMP_ENCOURS && $typeBonus == 'fidelite') {

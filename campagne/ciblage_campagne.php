@@ -11,16 +11,17 @@ if (isset($_POST['idCmp'])) {
     require_once "../ciblage/fn/fn_getDateRel.php";
 //    require_once "../lib/lib.php";
     require_once "../lib/tbLibelle.php";
-    $cmp = $connection->query('SELECT * FROM app_campagne WHERE id = ' . (int) $_POST['idCmp']);
+    $idCmp = (int) $_POST['idCmp'];
+    $cmp = $connection->query('SELECT * FROM app_campagne WHERE id = ' . $idCmp);
     if ($cmp->rowCount()) {
         $liCmp = $cmp->fetch(PDO::FETCH_OBJ);
-        $idCC = $liCmp->id_cible;
+        $idCC = (int) $liCmp->id_cible;
         if ($idCC > 0) {
-            $cib = $connection->query('SELECT * FROM app_cibles WHERE id = ' . (int) $idCC);
+            $cib = $connection->query('SELECT * FROM app_cibles WHERE id = ' . $idCC);
             $liCib = $cib->fetch(PDO::FETCH_OBJ);
             $nameCC = $liCib->nom;
-            $assCC = $liCib->association_group;
             $CC = $liCib->cible;
+            $assoc_group = $liCib->association_group;
             if ($nameCC == '')
                 $chek2 = ' checked ';
             else
@@ -49,12 +50,7 @@ if (isset($_POST['idCmp'])) {
     } elseif ($chek3 != '')
         echo "<br><br><span class='alert-box success'>Tous le parc (actif + suspended)</span>";
     else {
-        $tbCib = json_decode($CC, true);
-//        print_r($tbCib);
-        foreach ($tbCib as $g => $grp){
-            $g = substr($g, 1);
-            fn_drawGroupe($connection, $g, $grp);
-        }
+        drawCible($idCC, $CC, $assoc_group, $connection, $idCmp);
     }
     ?>
 </div>

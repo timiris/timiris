@@ -1,6 +1,35 @@
 <?php
 
-function fn_drawGroupe($connection, $idGroup, $grp = array()) {
+function drawCible($idC, $CC, $assoc_group, $connection, $idCmp = 0) {
+    $tbCib = json_decode($CC, true);
+//        print_r($tbCib);
+    $chAnd = $chOr = '';
+    if (strtolower(trim($assoc_group)) == 'or')
+        $chOr = 'checked="checked"';
+    else
+        $chAnd = 'checked="checked"';
+    echo '<div id=cntGrCiblage>';
+    echo "<input type ='hidden' id = 'idCibleHidden' value ='$idC'/>";
+    echo '<fieldset id="idFieldSetGroup" class="section" style = "border-radius:15px; background-color: #ddd;">
+        <legend>Régle d\'association des groupes</legend>
+        <input id="AssocGroupAnd" name="associationGroupe" type="radio" ' . $chAnd . ' value = "and">
+        <label for="AssocGroupAnd">Tous les groupes</label>
+
+        <input id="AssocGroupOr"  name="associationGroupe" type="radio" ' . $chOr . ' value = "or">
+        <label for="AssocGroupOr">Au moins un groupe</label>
+    </fieldset>';
+    foreach ($tbCib as $g => $grp) {
+        $g = substr($g, 1);
+        drawGroupe($connection, $g, $grp);
+    }
+
+    echo '</div>
+        <div style = "display: inline-block; position:absolute; left:20px">
+            <button class="button12 black AjouterGroupe" style="display: inline-block;">+ Groupe</button>
+        </div>';
+}
+
+function drawGroupe($connection, $idGroup, $grp = array()) {
     $assoc = (isset($grp['association'])) ? $grp['association'] : 'and';
     $cha = ($assoc = "and") ? ' checked="checked" ' : '';
     $cho = ($assoc = "or") ? ' checked="checked" ' : '';
@@ -21,7 +50,7 @@ function fn_drawGroupe($connection, $idGroup, $grp = array()) {
                 unset($grp['association']);
                 foreach ($grp as $idc => $cr) {
                     $idc = substr($idc, 1);
-                    fn_draw_critere($connection, $idGroup, $idc, $cr);
+                    drawCritere($connection, $idGroup, $idc, $cr);
                 }
                 ?>
             </div>
@@ -58,7 +87,7 @@ function fn_drawGroupe($connection, $idGroup, $grp = array()) {
     <?php
 }
 
-function fn_draw_critere($connection, $idGroup, $idc, $cr = array()) {
+function drawCritere($connection, $idGroup, $idc, $cr = array()) {
     global $libNature, $libTypeDonnees;
     $nat = explode('_', $cr['natureType']);
     $tp_dn = $nat[1];
@@ -80,16 +109,16 @@ function fn_draw_critere($connection, $idGroup, $idc, $cr = array()) {
             <input type="hidden" id="natureType_<?php echo $idDOM; ?>" class="critere" value = "<?php echo $cr['natureType']; ?>"/>
             <?php
             if ($nature != NATURE_ATTRIBUT)
-                fn_draw_critere_not_attribut($connection, $idDOM, $tp_dn, $cr);
+                drawCritereNotAttribut($connection, $idDOM, $tp_dn, $cr);
             else
-                fn_draw_critere_attribut($connection, $idDOM, $tp_dn, $cr);
+                drawCritereAttribut($connection, $idDOM, $tp_dn, $cr);
             ?>
         </div>
     </div>
     <?php
 }
 
-function fn_draw_critere_not_attribut($connection, $idDOM, $tp_dn, $cr = array()) {
+function drawCritereNotAttribut($connection, $idDOM, $tp_dn, $cr = array()) {
     global $lib, $libTypeDonnees;
     $options = $selUnite = "";
     $limit = array('j' => 31, 'm' => 12, 'a' => 4);
@@ -238,7 +267,7 @@ function fn_draw_critere_not_attribut($connection, $idDOM, $tp_dn, $cr = array()
     <?php
 }
 
-function fn_draw_critere_attribut($connection, $idDOM, $tp_dn, $cr = array()) {
+function drawCritereAttribut($connection, $idDOM, $tp_dn, $cr = array()) {
     global $lib;
     $idTypeCompteur = isset($cr['idTypeCompteur']) ? $cr['idTypeCompteur'] : '';
     $operateur = isset($cr['operateur']) ? $cr['operateur'] : '';
@@ -269,8 +298,7 @@ function fn_draw_critere_attribut($connection, $idDOM, $tp_dn, $cr = array()) {
                                         $html = $ligne->html;
                                         $maxlength = ($ligne->max_length) ? " maxlength = " . $ligne->max_length : "";
                                         $options .= "<option value = " . $ligne->code . ":" . $ligne->categorie . ":" . $ligne->html . ":" . $ligne->max_length . ":" . $ligne->classe . ":" . $ligne->type . " selected>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
-                                    }
-                                    else
+                                    } else
                                         $options .= "<option value = " . $ligne->code . ":" . $ligne->categorie . ":" . $ligne->html . ":" . $ligne->max_length . ":" . $ligne->classe . ":" . $ligne->type . ">" . ucfirst(strtolower($ligne->libelle)) . "</option>";
                                 }
                             }
@@ -313,13 +341,13 @@ function fn_draw_critere_attribut($connection, $idDOM, $tp_dn, $cr = array()) {
                         if ($html == 'input') {
                             echo "<input type = 'text' value ='$valeurCritere' id = 'valeurCritere_$idDOM' $maxlength class='critere $firstClass'/>";
                         } else {  // SELECT
-                            echo "<SELECT id = 'valeurCritere_$idDOM'>";
+                            echo "<SELECT id = 'valeurCritere_$idDOM' class='critere'>";
                             $result = $connection->query("SELECT * FROM ref_liste_choix_attribut WHERE attribut = '$idTypeCompteur'");
                             while ($ligne = $result->fetch(PDO::FETCH_OBJ)) {
                                 if ($valeurCritere == $ligne->code)
-                                    echo  "<option value = '" . $ligne->code . "' selected>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
+                                    echo "<option value = '" . $ligne->code . "' selected>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
                                 else
-                                    echo  "<option value = '" . $ligne->code . "'>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
+                                    echo "<option value = '" . $ligne->code . "'>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
                             }
                             echo '</SELECT>';
                         }
