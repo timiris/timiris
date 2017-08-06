@@ -1184,7 +1184,27 @@ $(document).ready(function () {
         });
     }
     function fn_cmp_modif_3(idCmp) {
-        alertDialog('En cours de développement', 'notice');
+        $("#popup").load("campagne/modification/bonus.php", {idCmp: idCmp});
+        $("#popup").dialog({
+            modal: true,
+            resizable: true,
+            draggable: true,
+            width: "1200",
+            height: "550",
+            open: function (event, ui) {
+                $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
+                $(":button:contains('Annuler')").focus(); // Set focus to the [Ok] button
+            },
+            buttons: [{text: "Enregistrer", click: function () {
+                        
+            }
+                },
+                {text: "Annuler", click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
     }
     function fn_cmp_modif_5(idCmp) {
         alertDialog('Veuillez choisir onglet modifiable', 'warning');

@@ -16,7 +16,7 @@ try {
         if (substr($file, -4) != '.txt') {
             $i++;
             unset($tbFiles[$k]);
-            if ($i > 2) {
+            if ($i > 10) {
                 $fichier = $rep_sauvegarde . $file;
                 unlink($fichier);
             }

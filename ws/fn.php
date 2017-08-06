@@ -5,6 +5,7 @@ if (!isset($rep))
 require_once $rep . 'conn/connection.php';
 require_once $rep . 'lib/tbLibelle.php';
 $arrCode = array('ussd' => 'e3302f0abb4f919c3e2e6c3641b74815', 'web' => '4a3eef00b6802c9b73dfe5714c7b81ba');
+
 //web_access_to_timiris
 //fidelityAccessForUSSD
 function getFidelitySolde($msisdn, $access) {
@@ -23,8 +24,7 @@ function getFidelitySolde($msisdn, $access) {
             return $ret->points_fidelite;
         else
             return -2;
-    }
-    else
+    } else
         return -1;
 }
 
@@ -44,8 +44,7 @@ function subscribeFidelity($msisdn, $access) {
     $res = $connection->query("update data_attribut set has_fidelity = 1, points_fidelite = $soldeInit, dt_fidelity ='" . date('YmdHis') . "' where numero = '$msisdn'");
     if ($res->rowCount()) {
         return 1;
-    }
-    else
+    } else
         return -1;
 }
 
@@ -106,14 +105,13 @@ function adjustFidelitySolde($msisdn, $valeur, $access) {
     $connection->query("UPDATE data_point_fidelite_nombre_consommation_$src SET " . implode(', ', $chn) . " WHERE numero = '$msisdn'");
     $connection->query("UPDATE data_point_fidelite_valeur_consommation_$src SET " . implode(', ', $chv) . " WHERE numero = '$msisdn'");
     $connection->query("UPDATE data_attribut SET points_fidelite = points_fidelite - $valeur WHERE numero = '$msisdn'");
-    if ($connection->commit()){
-        $fp = fopen($rp_log,'a');
-        $str = date('YmdHis')." : $src : $msisdn : $valeur\r";
-        fputs($fp,$str);
+    if ($connection->commit()) {
+        $fp = fopen($rp_log, 'a');
+        $str = date('YmdHis') . " : $src : $msisdn : $valeur\r\n";
+        fputs($fp, $str);
         fclose($fp);
         return 1;
-    }
-    else {
+    } else {
         $connection->rolBack();
         return -4;
     }

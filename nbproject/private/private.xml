@@ -3,16 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/timiris/campagne/start_campagne.php</file>
-            <file>file:/E:/timiris/Automat/import_generique.php</file>
-            <file>file:/E:/timiris/Automat/VOU/fn.php</file>
-            <file>file:/E:/timiris/Automat/import_generique_NewEvent.php</file>
-            <file>file:/E:/timiris/fn_sendSMS.php</file>
-            <file>file:/E:/timiris/Automat/config_prp.php</file>
-            <file>file:/E:/timiris/Automat/VOU_NE/import_vou.php</file>
-            <file>file:/E:/timiris/ciblage/calcule_cible.php</file>
-            <file>file:/E:/timiris/Automat/VOU/import_vou.php</file>
-            <file>file:/E:/timiris/ciblage/fn/fn_generateRequete.php</file>
+            <file>file:/E:/timiris/campagne/declencheur/bonus_conditionne.php</file>
+            <file>file:/E:/timiris/Automat/INIT/init_data.php</file>
+            <file>file:/E:/timiris/js/ajax.js</file>
+            <file>file:/E:/timiris/campagne/declencheur/declencheur.php</file>
+            <file>file:/E:/timiris/campagne/modif_save.php</file>
+            <file>file:/E:/timiris/campagne/fn/drawBonus.php</file>
+            <file>file:/E:/timiris/ws/fn.php</file>
+            <file>file:/E:/timiris/campagne/modification/bonus.php</file>
+            <file>file:/E:/timiris/ciblage/fn/fn_generateArrayParams.php</file>
+            <file>file:/E:/timiris/campagne/declencheur/type_donnees.php</file>
+            <file>file:/E:/timiris/Automat/fidelity/ftpFidelity.php</file>
+            <file>file:/E:/timiris/ciblage/modifierCible.php</file>
+            <file>file:/E:/timiris/Automat/fidelity/dumpFidelity.php</file>
+            <file>file:/E:/timiris/campagne/enregistrer_campagne.php</file>
+            <file>file:/E:/timiris/campagne/declencheur/groupe.php</file>
+            <file>file:/E:/timiris/campagne/ciblage_campagne.php</file>
         </group>
     </open-files>
 </project-private>

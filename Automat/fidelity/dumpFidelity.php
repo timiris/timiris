@@ -6,7 +6,7 @@ $dateJ = strtotime(date("Ymd"));
 $dtJD = date("Y-m-d", strtotime("-1 days", $dateJ));
 $fileName = $rep . 'dump_fidelity_' . $dtJD . '.txt';
 if (is_file($fileName) || is_file($fileName . '.gz'))
-    exit('exist deja');
+    exit();
 $req = $connection->query("select champ from historique_correspondance where h_date = '$dtJD'");
 if ($req->rowCount()) {
     $res = $req->fetch(PDO::FETCH_OBJ);
@@ -19,7 +19,7 @@ if ($req->rowCount()) {
                 where has_fidelity > 0';
     $res = $connection->query($req);
     $fp = fopen($fileName, 'w');
-    fputs($fp, 'msisdn|solde_fidelite|attribution|consommation' . "\r\n");
+    //fputs($fp, 'msisdn|solde_fidelite|attribution|consommation' . "\r\n");
     while ($li = $res->fetch(PDO::FETCH_OBJ)) {
         fputs($fp, $li->numero . '|' . $li->solde . '|' . $li->atr . '|' . $li->cns . "\r\n");
     }

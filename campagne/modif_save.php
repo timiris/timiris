@@ -112,7 +112,6 @@ try {
         $idCmp = (int) $tbCmp['idCmp'];
         unset($tbCmp['idCmp']);
         unset($tbCmp['dmd']);
-        print_r($tbCmp);
         if ($tbCmp['idChoixCible'] == 'idComposerCible') {
             $cible = $tbCmp['cible'];
             $associationGroupe = $cible["associationGroupe"];
