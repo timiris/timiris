@@ -100,14 +100,15 @@ function drawDeclencheur($nature, $idGroup, $idDec, $dec, $connection, $cls) {
             <input type="hidden" id="natureType_<?php echo $idDOM; ?>" class="critere" value = "<?php echo $table; ?>"/>
             <?php
             //require 'critereEvent.php';
-            drawDeclencheurEvent($connection, $idDOM, $tp_dn)
+            drawDeclencheurEvent($connection, $idDOM, $tp_dn, $dec)
             ?>
         </div>
     </div>
     <?php
 }
 
-function drawDeclencheurEvent($connection, $idDOM, $tp_dn) {
+function drawDeclencheurEvent($connection, $idDOM, $tp_dn, $dec) {
+    //print_r($dec);
     ?>
 
     <table width = "95%"style ='margin-top:5px;'>
@@ -117,9 +118,9 @@ function drawDeclencheurEvent($connection, $idDOM, $tp_dn) {
                 <td>
                     <select id="idTypeCompteur_<?php echo $idDOM; ?>" class="critere champCiblage" style='width:250px'>
                         <?php
-                        $options = "";
-                        if (!empty($_POST["evnt"]))
-                            $req = "SELECT * FROM ref_event WHERE type='" . $tp_dn . "' AND etat = 1 order by libelle";
+                        $options = $categorie = "";
+                        if (count($dec))
+                            $req = "SELECT * FROM ref_event WHERE type=" . $tp_dn . " AND etat = 1 order by libelle";
                         else
                             $req = "SELECT libelle, 2 as categorie, 'input' as html, 'chiffre' as classe, code_cmpt as code, fk_id_type as type, 10 as max_length FROM ref_compteurs WHERE fk_id_type='" . $tp_dn . "' AND etat = 1 order by libelle";
                         try {
@@ -148,31 +149,35 @@ function drawDeclencheurEvent($connection, $idDOM, $tp_dn) {
                     <select id="operateur_<?php echo $idDOM; ?>" class="critere operateur_ch_ciblage">
                         <?php
                         //require_once $rep . 'ciblage/val_categorie_operation.php';
-                        echo $options;
+                        $opp = (isset($dec['operateur'])) ? $dec['operateur'] : '';
+                        echo val_categorie_operation($connection, $categorie, $opp);
                         ?>
                     </select>
                     <div id = "divValRecherchee_<?php echo $idDOM; ?>" style="display:inline">
                         <?php
-                        $_POST["id"] = $idDOM;
+//                        $_POST["id"] = $idDOM;
                         //require_once $rep . 'ciblage/val_recherchee.php';
-                        echo $divValRech;
+                        $val = (isset($dec['valeur'])) ? $dec['valeur'] : '';
+                        echo val_recherchee($html, $maxlength, $html, $idDOM, $class, $code, $connection, $val);
                         ?>
                     </div>
                     <div id = "divUniteValRecherchee_<?php echo $idDOM; ?>" style="display:inline">
                         <?php
 // var_dump($tabUnite);
                         $selUnite = "";
-                        if (!empty($_POST["evnt"]))
-                            $req = "SELECT cmpt_parent, unite FROM ref_type_donnee_event WHERE id = " . $tp_dn;
-                        else
+                        //if (!empty($_POST["evnt"]))
+                        $defUnit = (isset($dec["unite"])) ? $dec["unite"] : '';
+                        if (isset($dec["fk_id_td"]) && !empty($dec["fk_id_td"]))
                             $req = "SELECT cmpt_parent, unite FROM ref_type_donnee WHERE id = " . $tp_dn;
+                        else
+                            $req = "SELECT cmpt_parent, unite FROM ref_type_donnee_event WHERE id = " . $tp_dn;
                         $result = $connection->query($req);
                         $ligne = $result->fetch(PDO::FETCH_OBJ);
                         $uniteTab = json_decode($ligne->unite, true);
                         $cmpt_parent = $ligne->cmpt_parent;
                         if (count($uniteTab))
                             foreach ($uniteTab as $u => $l) {
-                                $sel = ($u == 60 || $u == 100 || $u == 1048576) ? ' selected ' : '';
+                                $sel = (($defUnit != '' && $defUnit == $u) || ($defUnit == '' && ($u == 60 || $u == 100 || $u == 1048576))) ? ' SELECTED ' : '';
                                 $selUnite .= '<option value =' . $u . ' ' . $sel . '>' . $l . '</option>';
                             }
                         if ($selUnite != "")
@@ -185,6 +190,42 @@ function drawDeclencheurEvent($connection, $idDOM, $tp_dn) {
         </tbody>
     </table>
     <?php
+}
+
+function val_categorie_operation($connection, $categorie, $opp) {
+    $options = "";
+    $categorie = (int) $categorie;
+    if (!$categorie)
+        return $options;
+    $req = "SELECT * FROM ref_categorie_operation WHERE code= $categorie ";
+    $result = $connection->query($req);
+    while ($ligne = $result->fetch(PDO::FETCH_OBJ)) {
+        if ($opp == $ligne->operateur)
+            $options .= "<option value = '" . $ligne->operateur . "' SELECTED>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
+        else
+            $options .= "<option value = '" . $ligne->operateur . "'>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
+    }
+    return $options;
+}
+
+function val_recherchee($html, $maxlength, $html, $id, $class, $code, $connection, $valeur) {
+    $divValRech = "";
+    if (strtolower($html) == 'input') {
+        $max = ($maxlength != '') ? 'maxlength = "' . $maxlength . '"' : '';
+        $divValRech = '<input type = "text" id = "valeurCritere_' . $id . '" ' . $max . '  value = "' . $valeur . '" size ="6" class = "critere ' . $class . '" />';
+    } elseif (strtolower($html) == 'select') {
+        $req = "SELECT * FROM ref_liste_choix_attribut WHERE attribut = '$code'";
+        $result = $connection->query($req);
+        $divValRech = '<SELECT id = "valeurCritere_' . $id . '" class = "critere">';
+        while ($ligne = $result->fetch(PDO::FETCH_OBJ)) {
+            if ($valeur == $ligne->code)
+                $divValRech .= "<option value = '" . $ligne->code . "' SELECTED>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
+            else
+                $divValRech .= "<option value = '" . $ligne->code . "'>" . ucfirst(strtolower($ligne->libelle)) . "</option>";
+        }
+        $divValRech .= "</SELECT>";
+    }
+    return $divValRech;
 }
 
 function drawBonusGroup($idGrp) {
