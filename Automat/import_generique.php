@@ -206,7 +206,6 @@ try {
     }
     echo "\r\nFin parsing, process : '" . getmypid() . "'  " . date("Ymd H:i:s");
 } catch (Exception $e) {
-    echo "\n\rLast Rq : " . $reqGlobal;
     if ($config['nb_files'] == 1) {
         $nvEmpNom = $rep_file_error . $fileName;
         $fs = rename($fichier, $nvEmpNom);

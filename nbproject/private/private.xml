@@ -3,19 +3,25 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/E:/timiris/campagne/start_campagne.php</file>
             <file>file:/E:/timiris/campagne/declencheur/bonus_conditionne.php</file>
             <file>file:/E:/timiris/js/ajax.js</file>
             <file>file:/E:/timiris/campagne/declencheur/declencheur.php</file>
+            <file>file:/E:/timiris/campagne/campagne_cumul.php</file>
             <file>file:/E:/timiris/campagne/modif_save.php</file>
             <file>file:/E:/timiris/campagne/fn/drawBonus.php</file>
+            <file>file:/E:/timiris/ciblage/val_recherchee.php</file>
             <file>file:/E:/timiris/campagne/modification/bonus.php</file>
             <file>file:/E:/timiris/campagne/bonus/bonus_groupe.php</file>
             <file>file:/E:/timiris/ciblage/fn/fn_generateArrayParams.php</file>
             <file>file:/E:/timiris/campagne/declencheur/type_donnees.php</file>
             <file>file:/E:/timiris/lib/tbLibelle.php</file>
+            <file>file:/E:/timiris/ciblage/val_categorie_operation.php</file>
             <file>file:/E:/timiris/campagne/declencheur/groupe.php</file>
             <file>file:/E:/timiris/campagne/declencheur/critere.php</file>
+            <file>file:/E:/timiris/Automat/REC/config.php</file>
             <file>file:/E:/timiris/campagne/declencheur/critereEvent.php</file>
+            <file>file:/E:/timiris/defs.php</file>
         </group>
     </open-files>
 </project-private>

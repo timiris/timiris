@@ -35,6 +35,9 @@ try {
     $connection->query('BEGIN');
     $req = "SELECT id, id_cible, has_wl, type_bonus FROM app_campagne WHERE etat = " . CMP_ATTENTE . " and (dt_lancement is null or dt_lancement <= '" . date('Y-m-d H:i') . "')";
     $result = $connection->query($req);
+    if ($result->rowCount()) {
+        echo "Nous avons " . $result->rowCount() . " campagnes a valider \n\r";
+    }
     while ($ligne = $result->fetch(PDO::FETCH_OBJ)) {
         $idCmp = $ligne->id;
         $has_wl = $ligne->has_wl;
@@ -63,21 +66,20 @@ try {
                 $nbGT = (int) (0.01 * ($li_ins->nbr_cible));
                 $nbGT = ($nbGT > 200) ? 200 : $nbGT;
                 $nbrCible = $li_ins->nbr_cible - $nbGT;
-                
+
                 echo "Début insert gt campagne $idCmp\n\r";
                 $req_ins = "insert into app_campagne_exclus(fk_id_campagne, numero, is_bl) 
                     select $idCmp, tt.numero, false from ($req_global) tt 
                         where tt.numero not in(select numero from app_campagne_cible where fk_id_campagne = $idCmp)
                         order by  random() limit $nbGT";
                 $res_ins = $connection->query($req_ins);
-                
+
                 echo "Début insert cible campagne $idCmp\n\r";
                 $req_ins = "insert into app_campagne_cible(fk_id_campagne, numero, is_wl) 
                     SELECT $idCmp, tt.numero, false FROM ($req_global) tt 
                         where tt.numero not in(select numero from app_campagne_cible where fk_id_campagne = $idCmp)
                         and tt.numero not in(select numero from app_campagne_exclus where fk_id_campagne = $idCmp)";
-            }
-            else
+            } else
                 throw('Cible incorrecte');
         }
         else {  // Cible tous le parc:  Active+suspend
@@ -90,14 +92,14 @@ try {
             $nbGT = (int) (0.01 * ($li_ins->nbr_cible));
             $nbGT = ($nbGT > 200) ? 200 : $nbGT;
             $nbrCible = $li_ins->nbr_cible - $nbGT;
-            
+
             echo "Début insert gt campagne $idCmp\n\r";
             $req_ins = "insert into app_campagne_exclus(fk_id_campagne, numero, is_bl) 
                     SELECT $idCmp, numero, false FROM data_attribut where status in (1, 2) and profil != 333333
                         and numero not in(select numero from app_campagne_exclus where fk_id_campagne = $idCmp)
                         order by  random() limit $nbGT";
             $res_ins = $connection->query($req_ins);
-            
+
             echo "Début insert cible campagne $idCmp\n\r";
             $req_ins = "insert into app_campagne_cible(fk_id_campagne, numero, is_wl)
                 SELECT $idCmp, numero, false FROM data_attribut where status in (1, 2) and profil != 333333 
@@ -111,10 +113,9 @@ try {
             $newStatusCmp = CMP_REJETEE;
             $connection->query("insert into app_campagne_wf (fk_id_campagne, dt_action, id_profil, id_user, new_status, commentaire) 
                 VALUES ($idCmp, '" . date('YmdHis') . "', 0, 0, $newStatusCmp, 'rejet automatique car le nombre de la cible est 0')");
-        }
-        else
+        } else
             $newStatusCmp = CMP_ENCOURS;
-        
+
         echo "update infos campagne $idCmp\n\r";
         $req_upd = "update app_campagne set nbr_cible = nbr_cible + $nbrCible, etat = " . $newStatusCmp . ",dt_lancement_reelle= '" . date('Y-m-d H:i:s') . "', nbr_gc = $nbGT  where id = $idCmp";
         $res_upd = $connection->query($req_upd);
