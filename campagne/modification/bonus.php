@@ -17,7 +17,6 @@ if (isset($_POST['idCmp'])) {
     if ($cmp->rowCount()) {
         $liCmp = $cmp->fetch(PDO::FETCH_OBJ);
         $defDeclencheur = $liCmp->type_bonus;
-        require_once $rep . "campagne/declencheur/declencheur.php";
         if ($defDeclencheur != '') {
             $sms_bonus_ar = $liCmp->sms_bonus_ar;
             $sms_bonus_fr = $liCmp->sms_bonus_fr;
@@ -36,15 +35,17 @@ if (isset($_POST['idCmp'])) {
             }
             $rqBonus = $connection->query("SELECT * FROM app_campagne_bonus WHERE fk_id_campagne = $idCmp");
             while ($bns = $rqBonus->fetch(PDO::FETCH_OBJ)) {
+                $idGrp = $bns->fk_id_groupe;
                 if (!isset($arrBns[$bns->fk_id_groupe]))
                     $arrBns[$bns->fk_id_groupe] = array();
                 $arrBns[$idGrp][$bns->id] = array('type_bonus' => $bns->type_bonus, 'nature' => $bns->nature,
                     'code_bonus' => $bns->code_bonus, 'valeur' => $bns->valeur, 'ch_ref' => $bns->ch_ref,
                     'unite' => $bns->unite);
             }
-            
-            drawBonus($idCmp, $defDeclencheur, $arrGrp, $arrBns, $connection);
+
+            //drawBonus($idCmp, $defDeclencheur, $arrGrp, $arrBns, $connection);
         }
+        require_once $rep . "campagne/declencheur/declencheur.php";
     }
 }
 ?>

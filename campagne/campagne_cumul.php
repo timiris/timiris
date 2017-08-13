@@ -17,8 +17,6 @@ try {
     require_once "fn/fn_generateArrayGroupe.php";
     require_once $rep . "Automat/config_prp.php";
 
-
-
     $arrReq = $bns_dec = array();
     $tbTables = array(2 => 'data_appel_emis', 3 => 'data_appel_recu', 4 => 'data_sms_emis',
         5 => 'data_recharge', 6 => 'data_mgr', 7 => 'data_data', 8 => 'data_service', 12 => 'data_consommation');

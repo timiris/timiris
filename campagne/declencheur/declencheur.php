@@ -28,7 +28,8 @@ switch ($defDeclencheur) {
 <div id="div_detail_declencheur">
     <?php
     if(isset($arrGrp)){
-        drawBonus($idCmp, $defDeclencheur, $arrGrp, $arrBns);
+        drawBonus($defDeclencheur, $arrGrp, $arrBns, $connection);
+        print_r($arrBns);
     }
     ?>
 </div>
