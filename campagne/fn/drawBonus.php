@@ -196,7 +196,7 @@ function getCompteursBonus($idType = '', $def = '') {
     return $str;
 }
 
-function getUnitBonus($type, $natBonus, $natureTrafic, $typeDec) {
+function getUnitBonus($type, $natBonus, $natureTrafic, $typeDec, $def) {
     global $connection, $conf_bonus_pp_cumule, $conf_bonus_pp;
     $natBonus = (int) $natBonus;
     $str = '';
@@ -206,18 +206,23 @@ function getUnitBonus($type, $natBonus, $natureTrafic, $typeDec) {
         if ($result->rowCount()) {
             $ligne = $result->fetch(PDO::FETCH_OBJ);
             $uniteTab = json_decode($ligne->unite, true);
+            $defUnits = array(60, 100, 1048576);
             if (count($uniteTab))
                 foreach ($uniteTab as $u => $l) {
-                    $sel = ($u == 60 || $u == 100 || $u == 1048576) ? ' selected ' : '';
+                    $sel = (($def != '' && $u == $def) || ($def == '' && in_array($u, $defUnits))) ? ' selected ' : '';
                     $str .= '<option value =' . $u . ' ' . $sel . '>' . $l . '</option>';
                 }
         }
     } else {
         $natureTrafic = (int) $natureTrafic;
-        $arrConf = (substr($typeDec, 0, 6) == 'cumule')? $conf_bonus_pp_cumule : $conf_bonus_pp;
+        $arrConf = (substr($typeDec, 0, 6) == 'cumule') ? $conf_bonus_pp_cumule : $conf_bonus_pp;
         if ($natureTrafic)
-            foreach ($arrConf[$natureTrafic][$natBonus] as $k => $v)
-                $str .= '<option value =' . $k . ' >' . $v . '</option>';
+            foreach ($arrConf[$natureTrafic][$natBonus] as $k => $v) {
+                if ($k == $def)
+                    $str .= '<option value =' . $k . ' SELECTED>' . $v . '</option>';
+                else
+                    $str .= '<option value =' . $k . ' >' . $v . '</option>';
+            }
     }
     return $str;
 }
@@ -268,7 +273,7 @@ function Bonus($idBonus, $bns, $nature) {
     $str .= '<label for="idValeurBonus' . $idBonus . '">Valeur : </label>';
     $str .= '<input type="text" id ="idValeurBonus' . $idBonus . '" value ="' . $bns['valeur'] . '" class="chiffre" style="width:50px;"/>';
     $str .= '<select id="idUniteCompteur' . $idBonus . '"  style="width:100px;">';
-    $str .= getUnitBonus($bns['type_bonus'], $bns['nature'], $nature, $defDeclencheur);
+    $str .= getUnitBonus($bns['type_bonus'], $bns['nature'], $nature, $defDeclencheur, $bns['unite']);
     $str .= '</select>';
     $str .= '</div>';
     $str .= '</div>';
