@@ -4,7 +4,7 @@ if (!isset($rep))
 require_once $rep . "lib/tbLibelle.php";
 require_once $rep . "campagne/bonus/config.php";
 
-function drawBonus($type, $arrGrp, $arrBns, $connection) {
+function drawBonus($type, $arrGrp, $arrBns, $connection, $sms_ar, $sms_fr) {
     echo '<div id = "cntGrEvent">
     <fieldset class="section" style = "border-radius:15px; background-color: #ddd;">
         <legend>Régle d\'association des groupes</legend>
@@ -19,6 +19,15 @@ function drawBonus($type, $arrGrp, $arrBns, $connection) {
 //    require_once "groupe.php";
     foreach ($arrGrp as $idGrp => $grp)
         drawGroupe($idGrp, $connection, $cls, $grp, $arrBns);
+
+    echo '</div>';
+    echo '<div>
+        <div style = "display: inline-block; position:absolute; left:20px">
+            <button  class="button12 black declencheur ' . $cls . ' AjouterGroupe" style="display: inline-block;">+ Groupe</button>
+        </div>
+    </div><br><br>';
+    echo '<div id="cntBonus">';
+    echo drawBonusGroup('bnsgeneral', $arrBns, 1, $sms_ar, $sms_fr);
     echo '</div>';
 }
 
@@ -61,7 +70,7 @@ function drawGroupe($idGroup, $connection, $cls, $grp, $arrBns) {
             </div>
             <?php
             //require_once '../bonus/bonus_groupe.php';
-            echo drawBonusGroup($idGroup, $arrBns, $nature);
+            echo drawBonusGroup($idGroup, $arrBns, $nature, $grp['sms_ar'], $grp['sms_fr']);
             ?>
         </fieldset>
     </div>
@@ -130,21 +139,30 @@ function drawDeclencheur($nature, $idGroup, $idDec, $dec, $connection, $cls) {
     <?php
 }
 
-function drawBonusGroup($idGroup, $arrBns, $nature) {
+function drawBonusGroup($idGroup, $arrBns, $natureTrafic, $sms_ar, $sms_fr) {
     $idBonus = $idGroup;
+    $idGroup = (int) $idGroup;
+    $legendBONUS = ($idBonus == 'bnsgeneral' || $idBonus == 1000) ? 'Bonus Global' : 'Bonus du groupe';
     $str = '<div id="Bonus' . $idBonus . '" class = "divBonus">
         <fieldset id="divGroupeBonus' . $idBonus . '" class="divGroupeCritere subSection"  style = "border-radius:25px;">
-            <legend>Bonus</legend>
+            <legend>' . $legendBONUS . '</legend>
             <div class="ajouterDIV" name ="ajouterDiv' . $idBonus . '"title="Ajouter Bonus"></div>
             <div style="margin-bottom: 5px;">';
     $labelBONUS = ($idBonus == 'bnsgeneral' || $idBonus == 1000) ? 'SMS COMMUNICATION BONUS' : 'SMS COMMUNICATION BONUS GROUPE';
-    $str .= '<input type="checkbox" class="ShowSMSBonus" id="idShowSMSBonus' . $idBonus . '">';
+    if ($sms_ar == '' && $sms_fr == '') {
+        $display = ' display:none;';
+        $checked = '';
+    } else {
+        $display = '';
+        $checked = 'checked';
+    }
+    $str .= '<input type="checkbox" class="ShowSMSBonus" id="idShowSMSBonus' . $idBonus . '" ' . $checked . '>';
     $str .= '<label for="idShowSMSBonus' . $idBonus . '"> ' . $labelBONUS . '</label><br>';
-    $str .= '<textarea rows="2" cols="40" name="smsTeasignFr' . $idBonus . '" class="smsComms" style="display: none;" id="idSMSBonusFr' . $idBonus . '" placeholder ="SMS de communication en français"></textarea>';
-    $str .= '<textarea rows="2" cols="40" name="smsTeasignAr' . $idBonus . '" class="arabic smsComms" dir="rtl" style="display: none;" id="idSMSBonusAr' . $idBonus . '" placeholder="رسالة نصية باللغة العربية"></textarea>';
+    $str .= '<textarea rows="2" cols="40" name="smsTeasignFr' . $idBonus . '" class="smsComms" style="' . $display . '" id="idSMSBonusFr' . $idBonus . '" placeholder ="SMS de communication en français">' . $sms_fr . '</textarea>';
+    $str .= '<textarea rows="2" cols="40" name="smsTeasignAr' . $idBonus . '" class="arabic smsComms" dir="rtl" style="' . $display . '" id="idSMSBonusAr' . $idBonus . '" placeholder="رسالة نصية باللغة العربية">' . $sms_ar . '</textarea>';
     $str .= '<br><center><span align="right" name="smsTeasignAr' . $idBonus . 'Span"></span><span name="smsTeasignFr' . $idBonus . 'Span"></span></center>';
     $str .= '<br />';
-    $str .= '<ul class="tags" id ="tags_' . $idBonus . '" style="display: none;">
+    $str .= '<ul class="tags" id ="tags_' . $idBonus . '" style="' . $display . '">
         <li><b>Variables :&nbsp;&nbsp;</b></li>
         <li class="tagBns" name="{$msisdn}">Numéro</li>
         <li class="tagBns" name="{$nom}">Nom</li>
@@ -155,7 +173,7 @@ function drawBonusGroup($idGroup, $arrBns, $nature) {
     </div>';
     if (isset($arrBns[$idGroup]))
         foreach ($arrBns[$idGroup] as $idBns => $bns)
-            $str .= Bonus($idBns, $bns, $nature);
+            $str .= Bonus($idBns, $bns, $natureTrafic, $idGroup);
     $str .= '</fieldset></div>';
     return $str;
 }
@@ -234,7 +252,7 @@ function getNatureBonus($type = '', $def = '') {
         $cnd = ' AND id in (' . implode(',', array_keys($conf_bonus_pp[$type])) . ') ';
     }
 
-    $str .= '<option value = ""> </option>';
+//    $str .= '<option value = ""> </option>';
     $req = "SELECT * FROM ref_nature_bonus WHERE etat = 1 $cnd order by id desc";
     // ORDER BY type ASC, poids DESC
     $result = $connection->query($req);
@@ -249,17 +267,18 @@ function getNatureBonus($type = '', $def = '') {
     return $str;
 }
 
-function Bonus($idBonus, $bns, $nature) {
+function Bonus($idBonus, $bns, $natureTrafic, $idGroup) {
 //    $ex = array('type_bonus' => $bns->type_bonus, 'nature' => $bns->nature,
 //        'code_bonus' => $bns->code_bonus, 'valeur' => $bns->valeur, 'ch_ref' => $bns->ch_ref,
 //        'unite' => $bns->unite);
     $str = '';
     global $connection, $defDeclencheur;
+    $type = ($defDeclencheur == 'fidelite' || $idGroup == 0) ? 'libre' : '';
     $str .= "<div id ='divCntBonus$idBonus' class='divCntBonus'>";
     $str .= '<div class="SupBonus" title="Supprimer le Bonus" name = "Bonus' . $idBonus . '"></div>';
     $str .= '<div align = "center" style = "border : 1px solid blue; margin-bottom: 5px; padding:10px; border-radius:15px;">';
     $str .= '<select id = "idTypeBonus' . $idBonus . '" style = "width:120px;" class = "selectTypeBonus">';
-    $str .= getTypeBonus($defDeclencheur, $bns['type_bonus']);
+    $str .= getTypeBonus($type, $bns['type_bonus']);
     $str .= '</select>';
 
     $str .= '<label for="idSelectNatureBonus' . $idBonus . '">Nature Bonus : </label>';
@@ -273,7 +292,7 @@ function Bonus($idBonus, $bns, $nature) {
     $str .= '<label for="idValeurBonus' . $idBonus . '">Valeur : </label>';
     $str .= '<input type="text" id ="idValeurBonus' . $idBonus . '" value ="' . $bns['valeur'] . '" class="chiffre" style="width:50px;"/>';
     $str .= '<select id="idUniteCompteur' . $idBonus . '"  style="width:100px;">';
-    $str .= getUnitBonus($bns['type_bonus'], $bns['nature'], $nature, $defDeclencheur, $bns['unite']);
+    $str .= getUnitBonus($bns['type_bonus'], $bns['nature'], $natureTrafic, $defDeclencheur, $bns['unite']);
     $str .= '</select>';
     $str .= '</div>';
     $str .= '</div>';

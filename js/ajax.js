@@ -1157,8 +1157,8 @@ $(document).ready(function () {
                                 url: "campagne/modif_save.php",
                                 data: {cmp: JSON.stringify(parms)},
                                 success: function (data) {
-                                    $("#popup").dialog("close");
                                     if (data.exec == "1") {
+                                        $("#popup").dialog("close");
                                         alertDialog(data.message, 'success');
                                         $('input[name="cmp' + idCmp + '"]').click();
                                         showDetaillCmp(idCmp);
@@ -1196,8 +1196,47 @@ $(document).ready(function () {
                 $(":button:contains('Annuler')").focus(); // Set focus to the [Ok] button
             },
             buttons: [{text: "Enregistrer", click: function () {
-                        
-            }
+                        if (!verifOngletBonus()) {
+                            if (retour_enr_cmp == '')
+                                retour_enr_cmp = 'Merci de faire les corrections !!';
+                            alertDialog(retour_enr_cmp, 'error');
+                        } else {
+                            var parms = fn_infos_bonus();
+                            parms['id_cmp'] = idCmp;
+                            parms['cmp_sms_bonusAr'] = '';
+                            parms['cmp_sms_bonusFr'] = '';
+                            if ($("#idShowSMSBonusbnsgeneral").length && $("#idShowSMSBonusbnsgeneral").is(':checked')) {
+                                parms['cmp_sms_bonusAr'] = $("#idSMSBonusArbnsgeneral").val();
+                                parms['cmp_sms_bonusFr'] = $("#idSMSBonusFrbnsgeneral").val();
+                            } else if ($("#idShowSMSBonus1000").length && $("#idShowSMSBonus1000").is(':checked')) {
+                                parms['cmp_sms_bonusAr'] = $("#idSMSBonusAr1000").val();
+                                parms['cmp_sms_bonusFr'] = $("#idSMSBonusFr1000").val();
+                            }
+                            //console.log(parms);
+                            $.ajax({
+                                url: 'campagne/modification/save_bonus.php',
+                                async: false,
+                                type: 'POST',
+                                data: {parms: JSON.stringify(parms)},
+                                success: function (retour) {
+                                    ret = JSON.parse(retour);
+                                    if (ret.exec == '1') {
+                                        $('#popup').dialog("close");
+                                        alertDialog("Modification faite avec succès", "success");
+                                        $('input[name="cmp' + idCmp + '"]').click();
+                                        showDetaillCmp(idCmp);
+                                        $("#sky-tab1").attr('checked', false);
+                                        $("#sky-tab3").attr('checked', 'checked');
+                                    } else
+                                        alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
+                                },
+                                error: function () {
+                                    alertDialog("ERREUR, MERCI DE CONTACTER VOTRE ADMINISTRATEUR", "error");
+                                }
+                            });
+
+                        }
+                    }
                 },
                 {text: "Annuler", click: function () {
                         $(this).dialog("close");
@@ -1498,7 +1537,7 @@ $(document).ready(function () {
                 tab_parms = new Object();
                 alertDialog(message, 'warning');
             }
-        }else
+        } else
             alertDialog('Ciblage Vide', 'warning');
         return tab_parms;
     }
@@ -2206,29 +2245,38 @@ $(document).ready(function () {
                 result = false;
             }
         });
-        if (!result)
+        if (!result) {
+            console.log("1");
             return false;
+        }
         $('#cntGrEvent input:text').each(function () {
             if ($(this).val() == "") {
                 $(this).addClass('champVide');
                 result = false;
             }
         });
-        if (!result)
+        if (!result) {
+            console.log("2");
             return false;
+        }
 
         if (!$('#cntGrEvent .divCritere').length) {
             result = false;
             alertDialog('Vous devez avoir au moins un critère de déclenchement de bonus', 'warning');
         }
-        if (!result)
+        if (!result) {
+            console.log("3");
             return false;
+        }
 
 //                if ($('#cntBonus .divCntBonus').length)
 //                    return true;
         result = verif_Bonus_glb('decl');
-        if (!result)
+
+        if (!result) {
+            console.log("4");
             return false;
+        }
         var nbrBnsGr = 0;
         $('.divGroupe.dgDeclencheur').each(function () {
             var idG = $(this).attr('id');
