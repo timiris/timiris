@@ -9,18 +9,29 @@ require_once "../conn/connection.php";
 require_once "fn/drawCible.php";
 require_once "fn/fn_getDateRel.php";
 require_once "../lib/tbLibelle.php";
-
+$tbRetour['exec'] = 0;
+$tbRetour['message'] = '';
 if (isset($_POST['idCible'])) {
     $idCC = (int) $_POST['idCible'];
     if ($idCC > 0) {
-        $cib = $connection->query('SELECT * FROM app_cibles WHERE id = ' . $idCC);
-        $liCib = $cib->fetch(PDO::FETCH_OBJ);
-        $assoc_group = $liCib->association_group;
-        $CC = $liCib->cible;
+        $res = $connection->query("SELECT count(*) nbr FROM app_campagne WHERE id_cible = $idCC")->fetch(PDO::FETCH_OBJ);
+        $nbr = $res->nbr;
+        if (!$nbr) {
+            $cib = $connection->query('SELECT * FROM app_cibles WHERE id = ' . $idCC);
+            $liCib = $cib->fetch(PDO::FETCH_OBJ);
+            $assoc_group = $liCib->association_group;
+            $CC = $liCib->cible;
+        } else {
+            $tbRetour['message'] = 'Cible déja utilisée par une campagne';
+            echo json_encode($tbRetour);
+            exit();
+        }
     }
+    ob_start();
     drawCible($idCC, $CC, $assoc_group, $connection);
+    $tbRetour['message'] =  ob_get_clean();
+    $tbRetour['exec'] = 1;
 } elseif (isset($_POST['parms'])) {
-    $tbRetour['exec'] = 0;
     $tbRetour['message'] = 'Modification faite avec succès.';
     try {
         require_once "fn/fn_generateArrayParams.php";
@@ -40,6 +51,6 @@ if (isset($_POST['idCible'])) {
     } catch (Exception $e) {
         $tbRetour['message'] = $e->getMessage();
     }
-    echo json_encode($tbRetour);
 }
+echo json_encode($tbRetour);
 ?>

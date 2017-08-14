@@ -1368,50 +1368,68 @@ $(document).ready(function () {
 
     $(document.body).on("click", '.modifier_cible', function () {
         var btnSup = $(this), idCible = btnSup.attr("name").replace('modifier', '');
-        $("#popup").load("ciblage/modifierCible.php", {idCible: idCible});
-        $("#popup").dialog({
-            modal: true,
-            resizable: true,
-            draggable: true,
-            width: "1200",
-            height: "550",
-            open: function (event, ui) {
-                $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
-                $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
-            },
-            buttons: [{text: "Enregistrer", click: function () {
-                        var tab_parms = collectCiblage();
+//        $("#popup").load("ciblage/modifierCible.php", {idCible: idCible});
+        $.ajax({
+            type: "POST",
+            async: false,
+            dataType: 'json',
+            url: "ciblage/modifierCible.php",
+            data: {idCible: idCible},
+            success: function (data) {
+                if (data.exec == "1") {
+                    $("#popup").html(data.message);
+                    $("#popup").dialog({
+                        modal: true,
+                        resizable: true,
+                        draggable: true,
+                        width: "1200",
+                        height: "550",
+                        open: function (event, ui) {
+                            $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
+                            $(":button:contains('Non')").focus(); // Set focus to the [Ok] button
+                        },
+                        buttons: [{text: "Enregistrer", click: function () {
+                                    var tab_parms = collectCiblage();
 //                        tab_parms["tp_dmd"] = 'modifier_ciblage';
-                        $.ajax({
-                            url: "ciblage/modifierCible.php",
-                            async: false,
-                            type: 'POST',
-                            dataType: 'json',
-                            data: {parms: JSON.stringify(tab_parms)},
-                            success: function (retour) {
-                                if (retour.exec == '1') {
-                                    $('#popup').dialog("close");
-                                    $("input.masquer_det_cible[name='cible" + idCible + "']").click();
-                                    ;
-                                    alertDialog(retour.message, 'success');
-                                    $("input.afficher_det_cible[name='cible" + idCible + "']").click();
-                                    ;
-                                } else
-                                    alertDialog(retour.message, 'error');
-                            },
-                            error: function () {
-                                alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", "error");
-                            }
-                        });
+                                    $.ajax({
+                                        url: "ciblage/modifierCible.php",
+                                        async: false,
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        data: {parms: JSON.stringify(tab_parms)},
+                                        success: function (retour) {
+                                            if (retour.exec == '1') {
+                                                $('#popup').dialog("close");
+                                                $("input.masquer_det_cible[name='cible" + idCible + "']").click();
+                                                ;
+                                                alertDialog(retour.message, 'success');
+                                                $("input.afficher_det_cible[name='cible" + idCible + "']").click();
+                                                ;
+                                            } else
+                                                alertDialog(retour.message, 'error');
+                                        },
+                                        error: function () {
+                                            alertDialog("ERREUR LORS DE LA RECHERCHE DE LA PAGE", "error");
+                                        }
+                                    });
 
-                    }
-                },
-                {text: "Annuler", click: function () {
-                        $(this).dialog("close");
-                    }
+                                }
+                            },
+                            {text: "Annuler", click: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                    });
+                } else {
+                    alertDialog(data.message, 'warning');
                 }
-            ]
+            },
+            error: function (e) {
+                alertDialog(data);
+            }
         });
+
     });
 
     $(document.body).on("click", '.supprimer_cible', function () {
