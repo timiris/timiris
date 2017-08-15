@@ -58,15 +58,17 @@ try {
         if ($cmpEtat == CMP_SOUMISE && $_SESSION["user"]["profil"] == $chez)
             $inptCmp .= '<p><input class="button12 red gererCampagne" style = "width:80px ;font-size : 70%; font-weight:bold;"  type = "button" value = "Rejetter" name = "rejeter_' . $idCmp . '"></p>';
 // Gestion des droits
-        if (($cmpEtat == CMP_EDTION || $cmpEtat == CMP_REJETEE) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == 1)) {
+        if (($cmpEtat == CMP_EDTION || $cmpEtat == CMP_REJETEE) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == PROFIL_ADMIN)) {
             $inptCmp .= '<p><input class="button12 black supprimer_campagne" style = "width:80px; font-size : 70%; font-weight:bold;"  type = "button" value = "Supprimer"  name = "supprimer' . $idCmp . '"></p>';
             $inptCmp .= '<p><input class="button12 grey" id = "btnModifCmp" style = "width:80px ;font-size : 70%; font-weight:bold;"  type = "button" value = "Modifier" name = "' . $idCmp . '"></p>';
         }
-        if (($cmpEtat == CMP_ENCOURS || $cmpEtat == CMP_SUSPENDUE) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == 1))
+        if (($cmpEtat == CMP_ENCOURS || $cmpEtat == CMP_SUSPENDUE) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == PROFIL_ADMIN))
             $inptCmp .= '<p><br><input class="button12 red gererCampagne" style = "width:80px; font-size : 70%; font-weight:bold;"  type = "button" value = "Arrêter"  name = "arreter_' . $idCmp . '"></p>';
-        if (($cmpEtat == CMP_ENCOURS) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == 1))
+        if (($cmpEtat == CMP_ENCOURS) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == PROFIL_ADMIN)) {
             $inptCmp .= '<p><input class="button12 black gererCampagne" style = "width:80px; font-size : 70%; font-weight:bold;"  type = "button" value = "Pause"  name = "pause_' . $idCmp . '"></p>';
-        if (($cmpEtat == CMP_SUSPENDUE) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == 1))
+            $inptCmp .= '<p><input class="button12 black relanceCampagne" style = "width:80px; font-size : 70%; font-weight:bold;"  type = "button" value = "Relance"  name = "' . $idCmp . '"></p>';
+        }
+        if (($cmpEtat == CMP_SUSPENDUE) && ($createur == $_SESSION["user"]["id"] || $_SESSION["user"]["profil"] == PROFIL_ADMIN))
             $inptCmp .= '<p><input class="button12 black gererCampagne" style = "width:80px; font-size : 70%; font-weight:bold;"  type = "button" value = "Activer"  name = "activer_' . $idCmp . '"></p>';
 
         $inptBl = (!$hasBl) ? '' : '<input class="button12 black export_bl" id="btnBl" style = "width:90px ;font-size : 90%; font-weight:bold;"  type = "button" value = "Liste noire" name = "' . $idCmp . '">';
@@ -99,8 +101,7 @@ try {
                 exit();
             }
             $dec_cible = decode_ciblage($cible, 1);
-        }
-        else
+        } else
             $dec_cible = "<br><br><span class='alert-box success'>Tous le parc (actif + suspended)</span>";
         ?>
         <td colspan = "7" style="margin:0;padding:0;">
@@ -145,8 +146,8 @@ try {
                                 $nbrMSISDN = $lis->nbr_msisdn;
                                 $nbrBONUS = $lis->nbr_bonus;
                                 $valorisation = $lis->val;
-                                $pt = number_format(100 * $nbrTeasing / $nbrCible, 1, '.', ' ') . ' %';
-                                $pb = number_format(100 * $nbrMSISDN / $nbrCible, 1, '.', ' ') . ' %';
+                                $pt = ($nbrCible) ? number_format(100 * $nbrTeasing / $nbrCible, 1, '.', ' ') . ' %' : '!?';
+                                $pb = ($nbrCible) ? number_format(100 * $nbrMSISDN / $nbrCible, 1, '.', ' ') . ' %' : '!?';
                                 ?>
                                 <fieldset class="divGroupeCritere subSection"  style = "border-radius:15px; padding-left:25px;">
                                     <legend>Campagne en chiffre</legend>
@@ -260,8 +261,7 @@ try {
                                 <?php
                                 if ($cmpEtat >= CMP_ENCOURS) {
                                     require 'kpi.php';
-                                }
-                                else
+                                } else
                                     echo '<span class="alert-box warning">Le calcul de KPI n\'est pas possible pour une campagne non active</span>';
                                 ?>
                             </ul>

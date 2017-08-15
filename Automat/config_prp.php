@@ -1,7 +1,6 @@
 <?php
 
-$repGlobal = 'E:/depot/test';
-//$repGlobal = '';
+$repGlobal = (strtolower(PHP_OS) == 'linux')? '':'E:/depot/test';
 $endOfLine = ($repGlobal == '') ? "\r\n" : "<br>";
 $rep_chargement = $repGlobal . '/tim_DATA/cdrs/chargement/in/';
 $rep_doublons = $repGlobal . '/tim_DATA/cdrs/doublons/in/';

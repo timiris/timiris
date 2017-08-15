@@ -4,6 +4,7 @@ define('PQ_OPERATOR', '2223');
 //define('PQ_NAT', array('2224', '2222'));
 define('LNF_NAT',8);
 define('LNF_INT',11);
+define('PROFIL_ADMIN',1);
 
 define('CMP_EDTION', 1);
 define('CMP_SOUMISE', 2);

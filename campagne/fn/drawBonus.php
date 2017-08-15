@@ -359,7 +359,7 @@ function drawDeclencheurEvent($connection, $idDOM, $tp_dn, $dec) {
 //                        $_POST["id"] = $idDOM;
                         //require_once $rep . 'ciblage/val_recherchee.php';
                         $val = (isset($dec['valeur'])) ? $dec['valeur'] : '';
-                        echo val_recherchee($html, $maxlength, $html, $idDOM, $class, $code, $connection, $val);
+                        echo val_recherchee($html, $maxlength, $idDOM, $class, $code, $connection, $val);
                         ?>
                     </div>
                     <div id = "divUniteValRecherchee_<?php echo $idDOM; ?>" style="display:inline">
@@ -410,7 +410,7 @@ function val_categorie_operation($connection, $categorie, $opp) {
     return $options;
 }
 
-function val_recherchee($html, $maxlength, $html, $id, $class, $code, $connection, $valeur) {
+function val_recherchee($html, $maxlength, $id, $class, $code, $connection, $valeur) {
     $divValRech = "";
     if (strtolower($html) == 'input') {
         $max = ($maxlength != '') ? 'maxlength = "' . $maxlength . '"' : '';

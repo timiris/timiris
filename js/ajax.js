@@ -1366,6 +1366,57 @@ $(document).ready(function () {
         });
     });
 
+    function getRelanceInfos() {
+        var $tb = new Object();
+        $('.relance').each(function () {
+            $tb[$(this).attr('name')] = $(this).val();
+        });
+        return $tb;
+    }
+
+    $(document.body).on("click", '.relanceCampagne', function () {
+        var idCmp = $(this).attr('name');
+        $("#dialog-message").html("<center><img src = 'img/loading.gif'></center>");
+        $('#dialog-message').load('campagne/modification/relance.php', {idCmp: idCmp});
+        $("#dialog-message").dialog({
+            modal: true,
+            resizable: true,
+            draggable: true,
+            width: "1000",
+            height: "650",
+            open: function (event, ui) {
+                $(".ui-dialog-titlebar-close").hide(); // Hide the [x] button
+            },
+            buttons: [
+                {text: "Enregistrer", click: function () {
+                        var parms = getRelanceInfos();
+                        parms['idCmp'] = idCmp;
+                        $.ajax({
+                            type: "POST",
+                            async: false,
+                            dataType: 'json',
+                            url: "campagne/modification/relance_save.php",
+                            data: {parms: JSON.stringify(parms)},
+                            success: function (data) {
+                                if(data.exec == 1)
+                                    alertDialog('Modification faite avec succès', 'success');
+                                else
+                                    alertDialog(data.message, 'error');
+                            },
+                            error: function (e) {
+                                alertDialog(data);
+                            }
+                        });
+                    }
+                },
+                {text: "Annuler", click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+
+    });
     $(document.body).on("click", '.modifier_cible', function () {
         var btnSup = $(this), idCible = btnSup.attr("name").replace('modifier', '');
 //        $("#popup").load("ciblage/modifierCible.php", {idCible: idCible});

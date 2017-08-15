@@ -8,21 +8,21 @@ if ($cmpEtat == CMP_ENCOURS) {   // Calcule ROI
         $v_bonus = 0;
 
     $rqroi = $connection->query('select cible, gc FROM app_campagne_kpi WHERE fk_id_campagne =' . $idCmp . " and tbname ='data_consommation_total'");
-    $rqroi = $rqroi->fetch(PDO::FETCH_OBJ);
-//    if($nbrGc){
-//        $consGc = $rqroi->gc / $nbrGc;
-//    }else
-//        $consGc = 0;
-    $consCible = ($rqroi->cible / $nbrCible - (($nbrGc) ? $rqroi->gc / $nbrGc : 0)) * $nbrCible / 100;
-
+    if ($rqroi->rowCount()) {
+        $rqroi = $rqroi->fetch(PDO::FETCH_OBJ);
+        $consCible = ($rqroi->cible / $nbrCible - (($nbrGc) ? $rqroi->gc / $nbrGc : 0)) * $nbrCible / 100;
+    } else {
+        $consCible = 0;
+    }
     $roi = $consCible - $v_bonus;
     $fcolor = ($roi > 0) ? 'green' : 'red';
 }
 $res_nature = $connection->query('SELECT *, upper(libelle) as lib FROM ref_nature WHERE id not in(1, 11, 13, 14) order by lib');
-while ($ligne_satats = $res_nature->fetch(PDO::FETCH_OBJ))
+while ($ligne_satats = $res_nature->fetch(PDO::FETCH_OBJ)) {
     $optionNature .= "<option value = '" . $ligne_satats->id . "'>" . ucfirst(strtolower($ligne_satats->libelle)) . "</option>";
+}
 ?>
-<p ><center class='alert-box notice'>Le ROI de la campagne est :<font color='<?php echo $fcolor;?>'> <?php echo number_format($roi, 2, '.', ' '); ?> UM</font></center></p>
+<p ><center class='alert-box notice'>Le ROI de la campagne est :<font color='<?php echo $fcolor; ?>'> <?php echo number_format($roi, 2, '.', ' '); ?> UM</font></center></p>
 <div id="divEnteteStatsGlobal" class ="divShadow" width="90%" >
     <table style = "width:100%;">
         <tr style='background-color: #ddd;'>
