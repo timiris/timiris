@@ -10,7 +10,7 @@ function getDateRel($dt, $pr) {
         case 'm' :
             $dateJ = date_create(date("Y-m-d"));
             $dt = date_create($dt . '-01');
-            $diff = date_diff($dt, $dateJ)->m;
+            $diff = date_diff($dt, $dateJ)->y * 12 + date_diff($dt, $dateJ)->m;
             break;
         case 'a' :
             $dateJ = date_create(date("Y-m-d"));
