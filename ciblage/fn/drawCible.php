@@ -196,9 +196,9 @@ function drawCritereNotAttribut($connection, $idDOM, $tp_dn, $cr = array()) {
                                     else
                                         $optionsFrom .= "<option value = '" . $ligne->h_date . "'>" . ucfirst(strtolower($ligne->h_date)) . "</option>";
                                     if ($idPeriodeTo == $ligne->h_date)
-                                        $optionsTo .= "<option value = '" . $ligne->h_date . "'>" . ucfirst(strtolower($ligne->h_date)) . "</option>";
-                                    else
                                         $optionsTo .= "<option value = '" . $ligne->h_date . "' selected>" . ucfirst(strtolower($ligne->h_date)) . "</option>";
+                                    else
+                                        $optionsTo .= "<option value = '" . $ligne->h_date . "'>" . ucfirst(strtolower($ligne->h_date)) . "</option>";
                                     // $options .= "<option value = ".$ligne->champ.">".ucfirst(strtolower($ligne->h_date))."</option>";
                                 }
                             }
