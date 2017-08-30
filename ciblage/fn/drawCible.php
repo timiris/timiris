@@ -47,8 +47,10 @@ function drawGroupe($connection, $idGroup, $grp = array()) {
 
             <div id = "critereContent<?php echo $idGroup; ?>">
                 <?php
-                unset($grp['association']);
+                if (isset($grp['association']))
+                    unset($grp['association']);
                 foreach ($grp as $idc => $cr) {
+//                    print_r($grp);
                     $idc = substr($idc, 1);
                     drawCritere($connection, $idGroup, $idc, $cr);
                 }
@@ -121,11 +123,14 @@ function drawCritere($connection, $idGroup, $idc, $cr = array()) {
 function drawCritereNotAttribut($connection, $idDOM, $tp_dn, $cr = array()) {
     global $lib, $libTypeDonnees;
     $options = $selUnite = "";
+    $arr_inv_op = array('!=' => '=', '=' => '!=', '<' => '>=', '>' => '<=', '<=' => '>', '>=' => '<');
     $limit = array('j' => 31, 'm' => 12, 'a' => 4);
     $label = array('j' => '31 Jours', 'm' => '12 Mois', 'a' => '4 Ans');
     $periode = (isset($cr['idUnitePeriodique'])) ? $cr['idUnitePeriodique'] : 'j';
     $idFormule = (isset($cr['idFormule'])) ? $cr['idFormule'] : '';
     $operateur = (isset($cr['operateur'])) ? $cr['operateur'] : '';
+    if(isset($cr['estInverse']) && ($cr['estInverse']) && isset($arr_inv_op[trim($operateur)]))
+        $operateur = $arr_inv_op[trim($operateur)];
     $valeurCritere = (isset($cr['valeurCritere'])) ? $cr['valeurCritere'] : '';
     $untieValeur = (isset($cr['untieValeur'])) ? $cr['untieValeur'] : '';
     $idTypeCompteur = (isset($cr['idTypeCompteur'])) ? $cr['idTypeCompteur'] : '';
@@ -270,7 +275,10 @@ function drawCritereNotAttribut($connection, $idDOM, $tp_dn, $cr = array()) {
 function drawCritereAttribut($connection, $idDOM, $tp_dn, $cr = array()) {
     global $lib;
     $idTypeCompteur = isset($cr['idTypeCompteur']) ? $cr['idTypeCompteur'] : '';
+    $arr_inv_op = array('!=' => '=', '=' => '!=', '<' => '>=', '>' => '<=', '<=' => '>', '>=' => '<');
     $operateur = isset($cr['operateur']) ? $cr['operateur'] : '';
+    if(isset($cr['estInverse']) && ($cr['estInverse']) && isset($arr_inv_op[$operateur]))
+        $operateur = $arr_inv_op[$operateur];        
     $valeurCritere = isset($cr['valeurCritere']) ? $cr['valeurCritere'] : '';
     ?>
     <table width = "95%">
