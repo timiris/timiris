@@ -48,7 +48,11 @@ function subscribeFidelity($msisdn, $access) {
         return -1;
 }
 
-function adjustFidelitySolde($msisdn, $valeur, $access) {
+function buyServiceFidelity($msisdn, $valeur, $service_id, $access) {
+    return adjustFidelitySolde($msisdn, $valeur, $access, $service_id);
+}
+
+function adjustFidelitySolde($msisdn, $valeur, $access, $service_id = 0) {
     //pwdFidelity
     $rp_log = '/tim_log/log_autre/fidelity_adjust.log';
 //    $rp_log = 'C:/fidelity_adjust.log';
@@ -100,16 +104,36 @@ function adjustFidelitySolde($msisdn, $valeur, $access) {
         $connection->query("insert into data_point_fidelite_nombre_consommation_web (numero) values ('$msisdn')");
         $connection->query("insert into data_point_fidelite_valeur_consommation_web (numero) values ('$msisdn')");
     }
-    $connection->query("UPDATE data_point_fidelite_nombre_consommation SET " . implode(', ', $chn) . " WHERE numero = '$msisdn'");
-    $connection->query("UPDATE data_point_fidelite_valeur_consommation SET " . implode(', ', $chv) . " WHERE numero = '$msisdn'");
-    $connection->query("UPDATE data_point_fidelite_nombre_consommation_$src SET " . implode(', ', $chn) . " WHERE numero = '$msisdn'");
-    $connection->query("UPDATE data_point_fidelite_valeur_consommation_$src SET " . implode(', ', $chv) . " WHERE numero = '$msisdn'");
-    $connection->query("UPDATE data_attribut SET points_fidelite = points_fidelite - $valeur WHERE numero = '$msisdn'");
+    if (count($chn)) {
+        $connection->query("UPDATE data_point_fidelite_nombre_consommation SET " . implode(', ', $chn) . " WHERE numero = '$msisdn'");
+        $connection->query("UPDATE data_point_fidelite_valeur_consommation SET " . implode(', ', $chv) . " WHERE numero = '$msisdn'");
+        $connection->query("UPDATE data_point_fidelite_nombre_consommation_$src SET " . implode(', ', $chn) . " WHERE numero = '$msisdn'");
+        $connection->query("UPDATE data_point_fidelite_valeur_consommation_$src SET " . implode(', ', $chv) . " WHERE numero = '$msisdn'");
+        $connection->query("UPDATE data_attribut SET points_fidelite = points_fidelite - $valeur WHERE numero = '$msisdn'");
+    }
+    if ($service_id) {
+        $searchTb = $connection->query("SELECT * FROM pg_catalog.pg_tables where tablename = 'data_point_fidelite_nombre_consommation_$service_id'");
+        if (!$searchTb->rowCount()) {
+            createTable("data_point_fidelite_nombre_consommation_$service_id", $connection);
+            createTable("data_point_fidelite_valeur_consommation_$service_id", $connection);
+        }
+        $rqVerif = $connection->query("select numero from data_point_fidelite_nombre_consommation_$service_id WHERE numero = '$msisdn'");
+        if (!$rqVerif->rowCount()) {
+            $connection->query("insert into data_point_fidelite_nombre_consommation_$service_id (numero) values ('$msisdn')");
+            $connection->query("insert into data_point_fidelite_valeur_consommation_$service_id (numero) values ('$msisdn')");
+        }
+        if (count($chn)) {
+            $connection->query("UPDATE data_point_fidelite_nombre_consommation_$service_id SET " . implode(', ', $chn) . " WHERE numero = '$msisdn'");
+            $connection->query("UPDATE data_point_fidelite_valeur_consommation_$service_id SET " . implode(', ', $chv) . " WHERE numero = '$msisdn'");
+        }
+    }
     if ($connection->commit()) {
-        $fp = fopen($rp_log, 'a');
-        $str = date('YmdHis') . " : $src : $msisdn : $valeur\r\n";
-        fputs($fp, $str);
-        fclose($fp);
+        if (is_file($rp_log)) {
+            $fp = fopen($rp_log, 'a');
+            $str = date('YmdHis') . " : $src : $msisdn : $valeur\r\n";
+            fputs($fp, $str);
+            fclose($fp);
+        }
         return 1;
     } else {
         $connection->rolBack();
