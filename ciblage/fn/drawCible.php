@@ -32,6 +32,7 @@ function drawCible($idC, $CC, $assoc_group, $connection, $idCmp = 0) {
 
 function drawGroupe($connection, $idGroup, $grp = array()) {
     $assoc = (isset($grp['association'])) ? $grp['association'] : 'and';
+    
     $cha = ("and" == $assoc) ? ' checked="checked" ' : '';
     $cho = ("or" == $assoc) ? ' checked="checked" ' : '';
     ?>
