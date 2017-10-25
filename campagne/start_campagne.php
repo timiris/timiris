@@ -35,6 +35,7 @@ try {
     $req = "SELECT id, id_cible, has_wl, type_bonus FROM app_campagne WHERE etat = " . CMP_ATTENTE . " and (dt_lancement is null or dt_lancement <= '" . date('Y-m-d H:i') . "') ORDER BY id";
     $result = $connection->query($req);
     while ($ligne = $result->fetch(PDO::FETCH_OBJ)) {
+        $newChez = '';
         $connection->query('BEGIN');
         $idCmp = $ligne->id;
         $has_wl = $ligne->has_wl;
@@ -110,13 +111,15 @@ try {
         $nbrCible = $res_ins->rowCount();
         if ($nbrCible == 0 && !$has_wl) {
             $newStatusCmp = CMP_REJETEE;
+            $newChez = ', chez_profil = profil_saisie';
+            echo "La campagne $idCmp rejetée automatiquement, car la cible est de 0\n\r";
             $connection->query("insert into app_campagne_wf (fk_id_campagne, dt_action, id_profil, id_user, new_status, commentaire)
                 VALUES ($idCmp, '" . date('YmdHis') . "', 0, 0, $newStatusCmp, 'rejet automatique car le nombre de la cible est 0')");
         } else
             $newStatusCmp = CMP_ENCOURS;
 
         echo "update infos campagne $idCmp\n\r";
-        $req_upd = "update app_campagne set nbr_cible = nbr_cible + $nbrCible, etat = " . $newStatusCmp . ",dt_lancement_reelle= '" . date('Y-m-d H:i:s') . "', nbr_gc = $nbGT  where id = $idCmp";
+        $req_upd = "update app_campagne set nbr_cible = nbr_cible + $nbrCible $newChez, etat = " . $newStatusCmp . ",dt_lancement_reelle= '" . date('Y-m-d H:i:s') . "', nbr_gc = $nbGT  where id = $idCmp";
         $res_upd = $connection->query($req_upd);
         if ($newStatusCmp == CMP_ENCOURS && $typeBonus == 'fidelite') {
             $cmp_lim = array();
@@ -139,9 +142,10 @@ try {
             }
             require 'bonus/bonus_directe.php';
         }
-        if ($connection->query('COMMIT'))
-            echo "La campagnes numéro $idCmp est lancée avec succès\n\r";
-        else
+        if ($connection->query('COMMIT')) {
+            if ($newStatusCmp == CMP_ENCOURS)
+                echo "La campagnes numéro $idCmp est lancée avec succès\n\r";
+        } else
             throw('COMMIT impossible');
     }
 } catch (PDOException $e) {
