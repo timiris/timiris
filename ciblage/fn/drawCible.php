@@ -20,6 +20,7 @@ function drawCible($idC, $CC, $assoc_group, $connection, $idCmp = 0) {
     </fieldset>';
     foreach ($tbCib as $g => $grp) {
         $g = substr($g, 1);
+//        print_r($grp);
         drawGroupe($connection, $g, $grp);
     }
 
@@ -30,9 +31,9 @@ function drawCible($idC, $CC, $assoc_group, $connection, $idCmp = 0) {
 }
 
 function drawGroupe($connection, $idGroup, $grp = array()) {
-    $assoc = (isset($grp['association'])) ? $grp['association'] : 'and';
-    $cha = ($assoc = "and") ? ' checked="checked" ' : '';
-    $cho = ($assoc = "or") ? ' checked="checked" ' : '';
+    $assoc = (isset($grp['association'])) ? $grp['association'] : 'and';   
+    $cha = ("and" == $assoc) ? ' checked="checked" ' : '';
+    $cho = ("or" == $assoc) ? ' checked="checked" ' : '';
     ?>
     <div id="groupe<?php echo $idGroup; ?>" class = "divGroupe dgCiblage">
         <fieldset id="divGroupeCritere<?php echo $idGroup; ?>" class="divGroupeCritere subSection"  style = "border-radius:25px;">
