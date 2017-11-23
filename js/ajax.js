@@ -283,6 +283,8 @@ $(document).ready(function () {
         if (!menuAct.hasClass('lism'))
             $('.sous-menu').slideUp('normal');
         if (!menuAct.hasClass('has-sub')) {
+            $('#popup').html('');
+            $('#dialog-message').html('');
             $("#divPrincipale").html("<br><br><br><center><img src = 'img/loading.gif'></center>");
             $("#divPrincipale").load(href + ".php");
         } else {
@@ -1221,6 +1223,7 @@ $(document).ready(function () {
                                 success: function (retour) {
                                     ret = JSON.parse(retour);
                                     if (ret.exec == '1') {
+                                        $('#popup').html('');
                                         $('#popup').dialog("close");
                                         alertDialog("Modification faite avec succès", "success");
                                         $('input[name="cmp' + idCmp + '"]').click();
@@ -1398,7 +1401,7 @@ $(document).ready(function () {
                             url: "campagne/modification/relance_save.php",
                             data: {parms: JSON.stringify(parms)},
                             success: function (data) {
-                                if(data.exec == 1)
+                                if (data.exec == 1)
                                     alertDialog('Modification faite avec succès', 'success');
                                 else
                                     alertDialog(data.message, 'error');
