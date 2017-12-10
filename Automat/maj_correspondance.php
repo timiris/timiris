@@ -27,8 +27,10 @@ try {
     $arr_dt['a']['dif'] = ($dateAP - $arr_mx_dt['a'] > 5 ) ? 5 : $dateAP - $arr_mx_dt['a']; //0
 
     $m_max = $dateMP - substr($arr_mx_dt['m'], -2) + ($dateAP - 1 - substr($arr_mx_dt['m'], 0, 4)) * 12;
+    if ($m_max < 0)
+        $m_max += 12;
     $arr_dt['m']['dif'] = ($m_max > 13 ) ? 13 : $m_max;
-
+//    print_r($arr_dt);
     $dateChanged = $reqCorr = array();
     foreach ($arr_dt as $type => $arr_type) {
         if ($arr_type['dif']) {
