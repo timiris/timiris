@@ -197,9 +197,9 @@ try {
         $nvEmpNom = $rep_file_error . $fileName;
         $fs = rename($fichier, $nvEmpNom);
         echo($e->getMessage());
-        echo "\r\n";
-        print_r($e);
-        echo "\r\n";
+//        echo "\r\n";
+//        print_r($e);
+//        echo "\r\n";
     } else {
         $config['nbrFichierCharge'] = (int) $config['nbrFichierCharge'] / 2 ? (int) $config['nbrFichierCharge'] / 2 : 1;
         $config['nb_files'] = (int) $config['nb_files'] / 2 ? (int) $config['nb_files'] / 2 : 1;
