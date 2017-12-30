@@ -40,8 +40,21 @@ function subscribeFidelity($msisdn, $access) {
     $res = $connection->query("select numero from data_attribut where has_fidelity = 1 and numero = '$msisdn'");
     if ($res->rowCount())
         return 2;
+    $dtSouscription = date('YmdHis');
+    $jSouscription = date('Y-m-d');
+    $mSouscription = date('Y-m');
+    $aSouscription = date('Y');
+    $res = $connection->query("SELECT champ from historique_correspondance where h_date in ('$jSouscription','$mSouscription','$aSouscription')");
+    $arr_champs = array();
+    while ($ligne = $res->fetch(PDO::FETCH_OBJ)) {
+        $arr_champs[] = $ligne->champ . ' = ' . $ligne->champ . ' +1 ';
+    }
+    if (count($arr_champs) != 3) {
+        return -1;
+    }
+    $res = $connection->query("update data_point_fidelite_nombre_souscrit set " . implode(',', $arr_champs));
 
-    $res = $connection->query("update data_attribut set has_fidelity = 1, points_fidelite = $soldeInit, dt_fidelity ='" . date('YmdHis') . "' where numero = '$msisdn'");
+    $res = $connection->query("update data_attribut set has_fidelity = 1, points_fidelite = $soldeInit, dt_fidelity ='$dtSouscription' where numero = '$msisdn'");
     if ($res->rowCount()) {
         return 1;
     } else
