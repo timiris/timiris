@@ -3,6 +3,9 @@
 try {
     $rep = '../../';
 //    require_once 'function_insert.php';
+    $dtBasculement = 20180101000001;
+    $seqBasculement = 48585;
+
     require_once 'connection.php';
     $reqVerif = "SELECT * FROM sys_cron WHERE type = '" . $config['cdrName'] . "' and etat = TRUE";
     $resVerif = $connection->query($reqVerif);
@@ -33,8 +36,10 @@ try {
             if (strpos($tbFiles[$i], $config['cdrName'], 0) === 0 && substr($tbFiles[$i], -4) == '.unl') {
                 $exp_file = explode('_', $tbFiles[$i]);
                 if (count($exp_file) == 6 && ($exp_file[1] == "101" || $exp_file[1] == "102")) {
-                    $tbConsid[] = $tbFiles[$i];
-                    $j++;
+                    if ($exp_file[4] > $dtBasculement) {    //&& $exp_file[5] > $seqBasculement Controle nouveau et ancien flux
+                        $tbConsid[] = $tbFiles[$i];
+                        $j++;
+                    }
                 }
             }
             unset($tbFiles[$i]);
@@ -140,7 +145,7 @@ try {
                 $nbrFile[] = $fileName;
                 $ret_v = verif_init($tb_init, $config['cdrName'], $dtFirst, $dtLast);
                 if (count($ret_v)) {
-                    $sujetMail = 'Alerte Initialisation';
+                    $subject = 'Alerte Initialisation' . $config['cdrName'];
                     $body = "Bonjour,<br>
                         Nous vous informons que le chargement des cdrs " . $config['cdrName'] . " s'est arrêter suite au problème d'initialisation mentionné par la suite.";
                     $altbody = "Bonjour,\r\n
@@ -151,6 +156,9 @@ try {
                     }
                     $connection->query("update sys_cron set etat = false where type ='" . $config['cdrName'] . "'");
                     require_once 'mail/envoyer_mail.php';
+
+                    $arr_cc = $arr_address = array();
+                    $tbRetMail = sendMail($subject, $body, $arr_address, $arr_cc);
                     exit();
                 }
                 $inf_file = explode('_', $fileName);
@@ -188,8 +196,7 @@ try {
 
                             if (is_dir($rep_sauv . $dt) || mkdir($rep_sauv . $dt)) {
                                 $nvEmpNom = $rep_sauv . $dt . '/' . $fileName;
-                            }
-                            else
+                            } else
                                 $nvEmpNom = $rep_sauv . $fileName;
                             $fs = rename($fichier, $nvEmpNom);
                             echo "\n\r" . $fileName . ", H:" . date('His');

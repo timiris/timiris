@@ -53,16 +53,16 @@ $old_mechili['10001_50000']['sup'] = 2000000;
 
 
 $new_mechili = array();
-$new_mechili['1_99']= array('inf'=> 1, 'sup' => 99);
+$new_mechili['1_9']= array('inf'=> 1, 'sup' => 9);
+$new_mechili['10_19']= array('inf'=> 10, 'sup' => 19);
+$new_mechili['20_29']= array('inf'=> 20, 'sup' => 29);
+$new_mechili['30_49']= array('inf'=> 30, 'sup' => 49);
+$new_mechili['50_99']= array('inf'=> 50, 'sup' => 99);
 $new_mechili['100_199']= array('inf'=> 100, 'sup' => 199);
 $new_mechili['200_299']= array('inf'=> 200, 'sup' => 299);
 $new_mechili['300_499']= array('inf'=> 300, 'sup' => 499);
 $new_mechili['500_999']= array('inf'=> 500, 'sup' => 999);
-$new_mechili['1000_1999']= array('inf'=> 1000, 'sup' => 1999);
-$new_mechili['2000_2999']= array('inf'=> 2000, 'sup' => 2999);
-$new_mechili['3000_4999']= array('inf'=> 3000, 'sup' => 4999);
-$new_mechili['5000_9999']= array('inf'=> 5000, 'sup' => 9999);
-$new_mechili['10000_2000000']= array('inf'=> 10000, 'sup' => 2000000);
+$new_mechili['1000_2000000']= array('inf'=> 1000, 'sup' => 2000000);
 
 //$config['mechili'] = $old_mechili;
 

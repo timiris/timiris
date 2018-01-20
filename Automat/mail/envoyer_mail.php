@@ -2,11 +2,15 @@
 
 //echo (extension_loaded('openssl')?'SSL loaded':'SSL not loaded')."\n";
 require_once 'PHPMailerAutoload.php';
+
 function sendMail($subject, $body, $arr_address, $arr_cc) {
 //    $arr_cc = $arr_address = array();
-//    $arr_address['mohamed.mahmoud@business-telecoms.com'] = 'Mohamed Mahmoud';
-//    $arr_cc['ahmedou@business-telecoms.com'] = 'Ahmedou Balla';
-//    $arr_cc['abeidi@business-telecoms.com'] = 'Yacoub Abeidi';
+    if (!count($arr_address)) {
+        $arr_address['support@business-telecoms.com'] = 'Support TIMIRIS';
+        $arr_cc['mohamed.mahmoud@business-telecoms.com'] = 'Mohamed Mahmoud';
+        $arr_cc['ahmedou@business-telecoms.com'] = 'Ahmedou Balla';
+        $arr_cc['abeidi@business-telecoms.com'] = 'Yacoub Abeidi';
+    }
     $mail = new PHPMailer;
     $mail->isSMTP();
     foreach ($arr_address as $add => $name)
@@ -26,8 +30,7 @@ function sendMail($subject, $body, $arr_address, $arr_cc) {
     if (!$mail->send()) {
         $ret['send'] = 0;
         $ret['message'] = "\r\n" . $mail->ErrorInfo;
-    }
-    else{
+    } else {
         $ret['send'] = 1;
         $ret['message'] = "";
     }

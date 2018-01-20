@@ -68,94 +68,108 @@ try {
             $content = fread($fp, filesize($fichier));
             $lnFile = '';
             $ln_lnFile = hexdec(hxp(1)) - 128;
+
             for ($i = 1; $i <= $ln_lnFile; $i++) {
                 $lnFile .= hxp($i + 1);
             }
             $lnFile = hexdec($lnFile);
-            $posLnFile = $ln_lnFile + 3;    // 3 positions a sauter (30 tag file, tag longueur file(82, 83) et le A0)
-            $lnEntete = hexdec(hxp($posLnFile));
-            $debFile = $posLnFile + $lnEntete + 1;  // Position du tag début file (A1)
+            if ($ln_lnFile > 3) {
+                echo "\r\nLe fichier : $fileName est rejeté, longueur anormal : $lnFile, codé sur $ln_lnFile positions";
+                $nvEmpNom = $rep_file_rejected . $fileName;
+                fclose($fp);
+                $fs = rename($fichier, $nvEmpNom);
+                unset($tbConsid[$key]);
+//                $allRq = $cdr = $tbMSISDN = $allRqAttr = $nbrFile = $af = $arr_glb_bonus = array();
+                $fileName = '';
+            } else {
+                $posLnFile = $ln_lnFile + 3;    // 3 positions a sauter (30 tag file, tag longueur file(82, 83) et le A0)
+                $lnEntete = hexdec(hxp($posLnFile));
+                $debFile = $posLnFile + $lnEntete + 1;  // Position du tag début file (A1)
 
-            $lnContent = '';
-            $ln_lnContent = hexdec(hxp($debFile + 1)) - 128;
-            for ($i = 1; $i <= $ln_lnContent; $i++) {
-                $lnContent .= hxp($i + $debFile + 1);
-            }
-            $lnContent = hexdec($lnContent);
-            $posDebCdrs = $debFile + $ln_lnContent + 2;
-            $posFinCdrs = $posDebCdrs + $lnContent;
-            $debCdr = $posDebCdrs;
-            $nbrLigne = $nbrLigneCons = 0;
-            while ($debCdr < $lnContent /* && $NumCdr < 1000 */) {
-                $lnTagCdr = $config[strtoupper(hxp($debCdr))];
-                $lnCh_lnCdr = hexdec(hxp($debCdr + $lnTagCdr)) - 128;
-                $strLong = '';
-                for ($j = 1; $j <= $lnCh_lnCdr; $j++)
-                    $strLong .= hxp($debCdr + $lnTagCdr + $j);
-                $lnCdr = hexdec($strLong);
-                $finCdr = $debCdr + $lnCh_lnCdr + $lnCdr + $lnTagCdr;
-                $debContenuCdr = $debCdr + $lnCh_lnCdr + $lnTagCdr + 1;
-                $tagDbCdr = hxp($debCdr);
-                if ($tagDbCdr == 'A1' || $tagDbCdr == 'A7' /* || $tagDbCdr == 'A0' */) {
-                    $rtParse = parse_cdr($debContenuCdr, $finCdr, $tagDbCdr);
-                    if (count($rtParse)) {
-                        if ($rtParse['heure'] < $dtFirst)
-                            $dtFirst = $rtParse['heure'];
-                        if ($rtParse['heure'] > $dtLast)
-                            $dtLast = $rtParse['heure'];
-                        $aDec = ${$config['tag_' . $tagDbCdr]};
-                        $fnGenCdr = 'GenInfosCdr' . $config['tag_' . $tagDbCdr];
-                        $rtGen = $fnGenCdr($rtParse);
-                        if (isset($rtGen['considere'])) {
-                            GenRq($rtGen, $tb_crspd, $tagDbCdr);
-                            if (count($grp_dec)) {
-                                $ret = fn_eligibility($rtGen, $tagDbCdr);
-                                if (count($ret)) {
+                $lnContent = '';
+                $ln_lnContent = hexdec(hxp($debFile + 1)) - 128;
+                for ($i = 1; $i <= $ln_lnContent; $i++) {
+                    $lnContent .= hxp($i + $debFile + 1);
+                }
+                $lnContent = hexdec($lnContent);
+                $posDebCdrs = $debFile + $ln_lnContent + 2;
+                $posFinCdrs = $posDebCdrs + $lnContent;
+                $debCdr = $posDebCdrs;
+                $nbrLigne = $nbrLigneCons = 0;
+                while ($debCdr < $lnContent /* && $NumCdr < 1000 */) {
+                    $lnTagCdr = $config[strtoupper(hxp($debCdr))];
+                    $lnCh_lnCdr = hexdec(hxp($debCdr + $lnTagCdr)) - 128;
+                    $strLong = '';
+                    for ($j = 1; $j <= $lnCh_lnCdr; $j++)
+                        $strLong .= hxp($debCdr + $lnTagCdr + $j);
+                    $lnCdr = hexdec($strLong);
+                    $finCdr = $debCdr + $lnCh_lnCdr + $lnCdr + $lnTagCdr;
+                    $debContenuCdr = $debCdr + $lnCh_lnCdr + $lnTagCdr + 1;
+                    $tagDbCdr = hxp($debCdr);
+                    if ($tagDbCdr == 'A1' || $tagDbCdr == 'A7' /* || $tagDbCdr == 'A0' */) {
+                        $rtParse = parse_cdr($debContenuCdr, $finCdr, $tagDbCdr);
+                        if (count($rtParse)) {
+                            if ($rtParse['heure'] < $dtFirst)
+                                $dtFirst = $rtParse['heure'];
+                            if ($rtParse['heure'] > $dtLast)
+                                $dtLast = $rtParse['heure'];
+                            $aDec = ${$config['tag_' . $tagDbCdr]};
+                            $fnGenCdr = 'GenInfosCdr' . $config['tag_' . $tagDbCdr];
+                            $rtGen = $fnGenCdr($rtParse);
+                            if (isset($rtGen['considere'])) {
+                                GenRq($rtGen, $tb_crspd, $tagDbCdr);
+                                if (count($grp_dec)) {
+                                    $ret = fn_eligibility($rtGen, $tagDbCdr);
+                                    if (count($ret)) {
 //                                    $fl = fopen($rep_log . $fileName, 'a');
 //                                    if ($fl) {
 //                                        fputs($fl, json_encode($ret) . " : ");
 //                                        fputs($fl, json_encode($rtGen) . "\n\r");
 //                                        fclose($fl);
 //                                    }
-                                    fn_calcul_bonus($rtGen, $ret);
+                                        fn_calcul_bonus($rtGen, $ret);
+                                    }
                                 }
                             }
                         }
+                        $nbrLigneCons++;
                     }
-                    $nbrLigneCons++;
+                    $debCdr = $finCdr + 1;
+                    $nbrLigne++;
                 }
-                $debCdr = $finCdr + 1;
-                $nbrLigne++;
-            }
-            fclose($fp);
-            $nbrFile[$fileName] = $dtFirst;
-            //*************** FIN PARTIE TRAITEMENT FICHIER
+                fclose($fp);
+                $nbrFile[$fileName] = $dtFirst;
+                //*************** FIN PARTIE TRAITEMENT FICHIER
 
-            $ret_v = verif_init($tb_init, 'msc', $dtFirst, $dtLast);
-            if (count($ret_v)) {
-                $sujetMail = 'Alerte Initialisation';
-                $body = "Bonjour,<br>
+                $ret_v = verif_init($tb_init, 'msc', $dtFirst, $dtLast);
+                if (count($ret_v)) {
+                    $subject = 'Alerte Initialisation' . $config['cdrName'];
+                    $body = "Bonjour,<br>
                         Nous vous informons que le chargement des cdrs " . $config['cdrName'] . " s'est arrêter suite au problème d'initialisation mentionné par la suite.";
-                $altbody = "Bonjour,\r\n
+                    $altbody = "Bonjour,\r\n
                         Nous vous informons que le chargement des cdrs " . $config['cdrName'] . " s'est arrêter suite au problème d'initialisation mentionné par la suite.";
-                foreach ($ret_v as $k => $v) {
-                    $body .= "<li>La date $k n'est pas encore initialisée !</li>";
-                    $altbody .= "\r\n - La date $k n'est pas encore initialisée !";
+                    foreach ($ret_v as $k => $v) {
+                        $body .= "<li>La date $k n'est pas encore initialisée !</li>";
+                        $altbody .= "\r\n - La date $k n'est pas encore initialisée !";
+                    }
+                    $connection->query("update sys_cron set etat = false where type ='" . $config['cdrName'] . "'");
+                    require_once 'mail/envoyer_mail.php';
+
+                    $arr_cc = $arr_address = array();
+                    $tbRetMail = sendMail($subject, $body, $arr_address, $arr_cc);
+                    exit();
                 }
-                $connection->query("update sys_cron set etat = false where type ='". $config['cdrName'] ."'");
-                require_once 'mail/envoyer_mail.php';
-                exit();
-            }
-            $dtMois = substr($dtLast, 0, 6);
-            $dtJour = substr($dtLast, 0, 8);
-            $cbp = 1;
-            $seq = (int) str_replace('.dat', '', str_replace('b', '', $fileName));
-            echo ", Nb Ligne : $nbrLigne, Nb L. consid : $nbrLigneCons";
-            $af[] = "('$fileName', '" . date('YmdHis') . "', $nbrLigne, $nbrLigneCons, '" . $config['cdrName'] . "', '$dtFirst ', '$dtLast', '$dtJour', '$dtMois', $cbp, $seq)";
+                $dtMois = substr($dtLast, 0, 6);
+                $dtJour = substr($dtLast, 0, 8);
+                $cbp = 1;
+                $seq = (int) str_replace('.dat', '', str_replace('b', '', $fileName));
+                echo ", Nb Ligne : $nbrLigne, Nb L. consid : $nbrLigneCons";
+                $af[] = "('$fileName', '" . date('YmdHis') . "', $nbrLigne, $nbrLigneCons, '" . $config['cdrName'] . "', '$dtFirst ', '$dtLast', '$dtJour', '$dtMois', $cbp, $seq)";
 
-            //****************************** FIN PARTIE TRAITEMENT *********************
+                //****************************** FIN PARTIE TRAITEMENT *********************
+            }
             // *************************** PARTIE MAJ **********************************
-            if (count($nbrFile) == $config['nb_files'] || count($nbrFile) == count($tbConsid)) {
+            if (count($nbrFile) && (count($nbrFile) == $config['nb_files'] || count($nbrFile) == count($tbConsid) )) {
                 try {
                     echo "\n\rDébut traitement, " . count($tbMSISDN) . " nums, process : '" . getmypid() . "' H:" . date('His');
                     execute_attribut($tbMSISDN, $allRqAttr, $connection);
@@ -165,6 +179,7 @@ try {
                     echo "\n\rFin traitement , process : '" . getmypid() . "' H:" . date('His');
                     $reqFile = "INSERT INTO app_fichier_charge (fichier, dt_chargement, nbr_ligne, nbr_ligne_considere, type_fichier, dt_first, dt_last, dt_jour, dt_mois, cbp, seq)
                        VALUES " . implode(', ', $af);
+
                     $connection->query($reqFile);
                     if ($connection->query('COMMIT')) {
                         echo "\n\rArchivage des fichiers , process : '" . getmypid() . "' ";
@@ -173,8 +188,7 @@ try {
                             $dt = substr($dtLast, 0, 8);
                             if (is_dir($rep_sauv . $dt) || mkdir($rep_sauv . $dt)) {
                                 $nvEmpNom = $rep_sauv . $dt . '/' . $fileName;
-                            }
-                            else
+                            } else
                                 $nvEmpNom = $rep_sauv . $fileName;
                             $fs = rename($fichier, $nvEmpNom);
                             echo "\n\r" . $fileName . ", H:" . date('His');
