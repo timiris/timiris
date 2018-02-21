@@ -56,7 +56,6 @@ $(document).ready(function () {
             defaultDate: 0,
             changeMonth: true,
             changeYear: true,
-            yearRange: "2000:2017",
             firstDay: 1,
             maxDate: 0,
             currentText: "Maintenant",
