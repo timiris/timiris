@@ -81,8 +81,7 @@ try {
 				(\'' . $associationGroupe . '\', \'' . date('Y-m-d H:i:s') . '\', ' . $_SESSION["user"]["id"] . ', \'' . json_encode($tables) . '\')';
         $result = $connection->query($req);
         $idCible = $connection->lastInsertId('id_cible_seq');   //last inserit id
-    }
-    else
+    } else
         $idCible = $tbCbl["cible_id"];
 
     // Enregistrement de la campagne
@@ -167,24 +166,29 @@ try {
         }
     }
     if (count($ar_lb)) {
-        $req = 'insert into app_campagne_cible (numero, fk_id_campagne, is_wl)
-            VALUES (' . implode(",$idCmp, true),(", $ar_lb) . ",$idCmp, true)";
-        $result = $connection->query($req);
+        $ar_lb = array_chunk($ar_lb, 1000);
+        foreach ($ar_lb as $arlb) {
+            $req = 'INSERT INTO app_campagne_cible (numero, fk_id_campagne, is_wl)
+            VALUES (' . implode(",$idCmp, true),(", $arlb) . ",$idCmp, true)";
+            $result = $connection->query($req);
+        }
     }
     if (count($ar_ln)) {
-        $req = 'insert into app_campagne_exclus (numero, fk_id_campagne, is_bl)
-            VALUES (' . implode(",$idCmp, true),(", $ar_ln) . ",$idCmp, true)";
-        $result = $connection->query($req);
+        $ar_ln = array_chunk($ar_ln, 1000);
+        foreach ($ar_ln as $arln) {
+            $req = 'INSERT INTO app_campagne_exclus (numero, fk_id_campagne, is_bl)
+            VALUES (' . implode(",$idCmp, true),(", $arln) . ",$idCmp, true)";
+            $result = $connection->query($req);
+        }
     }
 
-    $req = "insert into app_campagne_wf (fk_id_campagne, dt_action, id_profil, id_user) 
+    $req = "INSERT INTO app_campagne_wf (fk_id_campagne, dt_action, id_profil, id_user) 
                 VALUES ($idCmp, '" . date('YmdHis') . "', " . $_SESSION['user']['profil'] . ", " . $_SESSION['user']['id'] . ")";
     $result = $connection->query($req);
     if ($connection->query('COMMIT')) {
         $tbRetour['exec'] = 1;
         $tbRetour['message'] = 'Campagne créée avec succès';
-    }
-    else
+    } else
         throw("Impossible de faire COMMIT");
 } catch (PDOException $e) {
     $connection->query('ROLLBACK');
